@@ -2,22 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-}
-
 body {
     @apply relative block min-h-screen
 }
 
 .header {
-    @apply sticky block h-[3rem] w-full border-b border-gray-200
+    @apply sticky block w-full border-b mb-5 border-gray-200
 }
 
 .container {
     @apply flex gap-3 mx-3 w-full items-center
+}
+
+.card-container {
+    @apply flex h-full items-center mx-5 justify-center
 }
 
 .view {
@@ -55,6 +53,10 @@ body {
 }
 
 @layer base {
+    html, body, #root {
+        height: 100%;
+        margin: 0;
+    }
   * {
     @apply border-border;
     }

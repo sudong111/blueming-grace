@@ -3,15 +3,17 @@ import { useNavigate } from 'react-router-dom'
 import { FaHome } from "react-icons/fa";
 
 export default function Header() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     return (
         <div className="header">
-            <div className="flex justify-between h-full mx-5 items-center">
+            <div className="flex justify-between h-full mx-5 py-3 items-center">
                 <Button
                     variant="ghost"
                     onClick={() => navigate("/")}
-                ><FaHome/></Button>
+                >
+                    <FaHome/>
+                </Button>
                 <div className="flex gap-3">
                     <Button
                         variant="default"
