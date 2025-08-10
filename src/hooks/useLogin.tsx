@@ -9,7 +9,6 @@ export function useLogin() {
     const [error, setError] = useState<string | null>(null);
 
     async function loginUser(email: string, password: string) {
-        setError(null);
 
         try {
             const response = await fetch(
@@ -29,8 +28,7 @@ export function useLogin() {
                 console.log(result.message)
             }
             else {
-                dispatch(login(result.token));
-                localStorage.setItem("token", result.token);
+                dispatch(login({ token: result.token, user_id: result.user_id }));
                 navigate("/");
             }
         } catch (e: any) {

@@ -1,11 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import loginReducer from './loginSlice';
+import { persistStore } from "redux-persist";
 
 export const store = configureStore({
     reducer: {
-        auth: loginReducer,
+        login: loginReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export const persistor = persistStore(store);
