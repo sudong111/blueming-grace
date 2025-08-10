@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom'
 
-import Home from '../pages/Home'
-import Signup from '../pages/Signup'
-import Login from '../pages/Login'
-import InvestmentDiaryAdd from '../pages/InvestmentDiaryAdd'
-import InvestmentDiaryDetail from '../pages/InvestmentDiaryDetail'
+import Home from '../pages/home.tsx'
+import Signup from '../pages/signup.tsx'
+import Login from '../pages/login.tsx'
+import InvestmentDiaryAdd from '../pages/investmentDiaryAdd.tsx'
+import InvestmentDiaryDetail from '../pages/investmentDiaryDetail.tsx'
 
 export default function AppRouter() {
     return (

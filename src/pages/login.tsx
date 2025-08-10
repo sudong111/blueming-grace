@@ -1,11 +1,24 @@
-import {  Card, CardContent, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
+import {  Card, CardContent, CardHeader, CardTitle,} from "@/components/ui/card"
 import { useNavigate } from 'react-router-dom'
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from  "@/components/ui/button"
+import { useLogin } from "@/hooks/useLogin"
+import {useRef} from "react";
+import * as React from "react";
 
 export default function Login() {
     const navigate = useNavigate();
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const { loginUser } = useLogin();
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const email = emailRef.current?.value || "";
+        const password = passwordRef.current?.value || "";
+        loginUser(email, password);
+    }
 
     return (
         <div className="card-container">
@@ -14,7 +27,7 @@ export default function Login() {
                     <CardTitle>Login</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="flex flex-col gap-6">
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
@@ -23,6 +36,7 @@ export default function Login() {
                                     type="email"
                                     placeholder="blueming@example.com"
                                     required
+                                    ref={emailRef}
                                 />
                             </div>
                             <div className="grid gap-2">
@@ -33,22 +47,22 @@ export default function Login() {
                                     id="password"
                                     type="password"
                                     placeholder="password"
-                                    required />
+                                    required
+                                    ref={passwordRef}
+                                />
                             </div>
-                            <a
+                            <p
                                 onClick={() => navigate("/signup")}
                                 className="inline-block text-sm cursor-pointer underline-offset-4 hover:underline"
                             >
                                 sign-up
-                            </a>
+                            </p>
+                            <Button type="submit" className="w-full">
+                                Login
+                            </Button>
                         </div>
                     </form>
                 </CardContent>
-                <CardFooter className="flex-col gap-2">
-                    <Button type="submit" className="w-full">
-                        Login
-                    </Button>
-                </CardFooter>
             </Card>
         </div>
     )
