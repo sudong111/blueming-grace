@@ -1,12 +1,11 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "@/store/loginSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export function useLogin() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [error, setError] = useState<string | null>(null);
 
     async function loginUser(email: string, password: string) {
 
@@ -25,16 +24,18 @@ export function useLogin() {
             const result = await response.json();
 
             if(result.error) {
-                console.log(result.message)
+                toast.error(`로그인에 실패했습니다.\n${result.message || "Unknown error"}`);
             }
             else {
                 dispatch(login({ token: result.token, user_id: result.user_id }));
+                toast.success(`로그인에 성공했습니다.`);
                 navigate("/");
             }
-        } catch (e: any) {
-            setError(e.message || "Unknown error");
+        } catch (e) {
+            const error = e as Error;
+            toast.error(`로그인에 실패했습니다.\n${error.message || "Unknown error"}`);
         }
     }
 
-    return { loginUser, error };
+    return { loginUser };
 }

@@ -1,10 +1,10 @@
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {useRef} from "react";
-import {useLogin} from "@/hooks/useLogin";
-import {useSignup} from "@/hooks/useSignup";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useRef } from "react";
+import { useLogin } from "@/hooks/useLogin";
+import { useSignup } from "@/hooks/useSignup";
 
 interface  AuthFormCardProps {
     isLoginPage: boolean;

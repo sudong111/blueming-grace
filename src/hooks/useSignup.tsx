@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export function useSignup() {
     const navigate = useNavigate();
-    const [error, setError] = useState<string | null>(null);
 
     async function signupUser(email: string, password: string) {
 
@@ -22,15 +21,17 @@ export function useSignup() {
             const result = await response.json();
 
             if(result.error) {
-                console.log(result.message)
+                toast.error(`로그인에 실패했습니다.\n${result.message || "Unknown error"}`);
             }
             else {
+                toast.success(`회원가입에 성공했습니다.`);
                 navigate("/");
             }
-        } catch (e: any) {
-            setError(e.message || "Unknown error");
+        } catch (e) {
+            const error = e as Error;
+            toast.error(`회원가입에 실패했습니다.\n${error.message || "Unknown error"}`);
         }
     }
 
-    return { signupUser, error };
+    return { signupUser };
 }
