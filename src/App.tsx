@@ -6,8 +6,8 @@ import Header from "./pages/Header";
 export default  function App() {
   return (
     <div className="view">
-        <Header />
         <BrowserRouter>
+            <Header />
             <Router />
         </BrowserRouter>
     </div>
