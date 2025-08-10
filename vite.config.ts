@@ -6,7 +6,7 @@ import path from "path"
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 4000, // 원하는 포트 번호
+    port: 4000
   },
   resolve: {
     alias: {

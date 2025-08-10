@@ -1,6 +1,6 @@
 import {Button} from '@/components/ui/button.tsx'
 import { useNavigate } from 'react-router-dom'
-import type {RootState} from "@/store";
+import type { RootState } from "@/store";
 import { logout } from "@/store/loginSlice";
 import { FaHome } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";

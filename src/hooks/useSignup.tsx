@@ -21,7 +21,7 @@ export function useSignup() {
             const result = await response.json();
 
             if(result.error) {
-                toast.error(`로그인에 실패했습니다.\n${result.message || "Unknown error"}`);
+                toast.error(`회원가입에 실패했습니다.\n${result.message || "Unknown error"}`);
             }
             else {
                 toast.success(`회원가입에 성공했습니다.`);

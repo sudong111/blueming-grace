@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { useLogin } from "@/hooks/useLogin";
 import { useSignup } from "@/hooks/useSignup";
+import {toast} from "react-toastify";
 
 interface  AuthFormCardProps {
     isLoginPage: boolean;
@@ -28,7 +29,7 @@ export default function AuthFormCard({ isLoginPage }: AuthFormCardProps) {
         else {
             const passwordCheck = passwordCheckRef.current?.value || "";
             if (password !== passwordCheck) {
-                alert("Passwords do not match!");
+                toast.error(`비밀번호가 일치하지 않습니다.`);
                 return;
             }
             signupUser(email, password);
