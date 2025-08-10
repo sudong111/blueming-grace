@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { useLogin } from "@/hooks/useLogin";
 import { useSignup } from "@/hooks/useSignup";
-import {toast} from "react-toastify";
 
 interface  AuthFormCardProps {
     isLoginPage: boolean;
@@ -29,7 +28,7 @@ export default function AuthFormCard({ isLoginPage }: AuthFormCardProps) {
         else {
             const passwordCheck = passwordCheckRef.current?.value || "";
             if (password !== passwordCheck) {
-                toast.error(`비밀번호가 일치하지 않습니다.`);
+                alert(`비밀번호가 일치하지 않습니다.`);
                 return;
             }
             signupUser(email, password);
@@ -48,33 +47,30 @@ export default function AuthFormCard({ isLoginPage }: AuthFormCardProps) {
                     <form onSubmit={handleSubmit}>
                         <div className="flex flex-col gap-6">
                             <div className="card-input-container">
-                                <Label className="text-center" htmlFor="email">ID</Label>
+                                <Label className="text-center" htmlFor="id">ID</Label>
                                 <Input
                                     id="id"
-                                    type="email"
+                                    type="text"
                                     placeholder="blueming@example.com"
-                                    required
                                     ref={emailRef}
                                 />
                             </div>
                             <div className="card-input-container">
-                                <Label className="text-center" htmlFor="password">PW</Label>
+                                <Label className="text-center" htmlFor="pw">PW</Label>
                                 <Input
                                     id="pw"
                                     type="password"
                                     placeholder="password"
-                                    required
                                     ref={passwordRef}
                                 />
                             </div>
                             {isLoginPage ? null : (
                                 <div className="card-input-container">
-                                    <Label className="text-center" htmlFor="password">PW Confirmation</Label>
+                                    <Label className="text-center" htmlFor="pw_check">PW Confirmation</Label>
                                     <Input
-                                        id="password_check"
+                                        id="pw_check"
                                         type="password"
                                         placeholder="password"
-                                        required
                                         ref={passwordCheckRef}
                                     />
                                 </div>
