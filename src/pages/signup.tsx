@@ -1,7 +1,10 @@
+import AuthFormCard from "@/components/authFormCard.tsx";
+
 export default function Signup() {
+
     return (
-        <div>
-            Signup
-        </div>
+        <AuthFormCard
+            isLoginPage= {false}
+        />
     )
 }

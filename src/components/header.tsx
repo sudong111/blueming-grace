@@ -35,19 +35,12 @@ export default function Header() {
                         </Button>
                     </div>
                 ) :
-                    <div className="flex gap-3">
-                        <Button
-                            variant="default"
-                        >
-                            안녕하세요!
-                        </Button>
-                        <Button
-                            variant="outline"
-                            onClick={() => dispatch(logout())}
-                        >
-                            logout
-                        </Button>
-                    </div>
+                    <Button
+                        variant="outline"
+                        onClick={() => dispatch(logout())}
+                    >
+                        logout
+                    </Button>
                 }
             </div>
         </div>

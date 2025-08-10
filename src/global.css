@@ -10,6 +10,10 @@ body {
     @apply sticky block w-full border-b mb-5 border-gray-200
 }
 
+.card-input-container {
+    @apply grid grid-cols-[30%_auto] items-center gap-2;
+}
+
 .container {
     @apply flex gap-3 mx-3 w-full items-center
 }
