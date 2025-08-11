@@ -1,14 +1,16 @@
 import { BrowserRouter } from 'react-router-dom'
 import Router from './router'
-import Header from "./components/header.tsx";
+import { Header } from "./components/header.tsx";
 import './global.css'
 
-export default  function App() {
+export const App = () => {
   return (
-    <div className="view">
+    <div className="wrapper">
         <BrowserRouter>
             <Header />
-            <Router />
+            <div className="view">
+                <Router />
+            </div>
         </BrowserRouter>
     </div>
   )

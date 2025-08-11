@@ -5,7 +5,7 @@ import { logout } from "@/store/loginSlice";
 import { FaHome } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function Header() {
+export const Header = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { isLoggedIn } = useSelector((state: RootState) => state.login);

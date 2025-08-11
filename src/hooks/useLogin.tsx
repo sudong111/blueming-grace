@@ -2,11 +2,11 @@ import { useDispatch } from "react-redux";
 import { login } from "@/store/loginSlice";
 import { useNavigate } from "react-router-dom";
 
-export function useLogin() {
+export const useLogin = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    async function loginUser(email: string, password: string) {
+    const loginUser = async (email: string, password: string) => {
 
         try {
             const response = await fetch(

@@ -13,3 +13,10 @@ export interface errorInterface {
     message: string,
     status: number
 }
+
+export interface DiaryInterface {
+    id: number;
+    title: string;
+    contents: string;
+    date: string;
+}

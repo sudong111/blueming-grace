@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
-export function useSignup() {
+export const useSignup = () => {
     const navigate = useNavigate();
 
-    async function signupUser(email: string, password: string) {
+    const signupUser = async (email: string, password: string) => {
 
         try {
             const response = await fetch("https://the-rich-coding-test1.herokuapp.com/users.json", {

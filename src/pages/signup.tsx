@@ -1,6 +1,6 @@
-import AuthFormCard from "@/components/authFormCard.tsx";
+import { AuthFormCard } from "@/components/authFormCard.tsx";
 
-export default function Signup() {
+export const Signup = () => {
 
     return (
         <AuthFormCard

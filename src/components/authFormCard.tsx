@@ -10,7 +10,7 @@ interface  AuthFormCardProps {
     isLoginPage: boolean;
 }
 
-export default function AuthFormCard({ isLoginPage }: AuthFormCardProps) {
+export const AuthFormCard = ({ isLoginPage }: AuthFormCardProps) => {
 
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
@@ -36,16 +36,16 @@ export default function AuthFormCard({ isLoginPage }: AuthFormCardProps) {
     }
 
     return (
-        <div className="card-container">
-            <Card className="w-full max-w-[26rem]">
-                <CardHeader>
+        <div className="card-container items-center">
+            <Card className="w-[30rem] h-[20rem] flex flex-col">
+                <CardHeader className="border-b p-5">
                     <CardTitle>
                         {isLoginPage ? "Login" : "Sign up"}
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit}>
-                        <div className="flex flex-col gap-6">
+                <CardContent className="p-5 flex-1">
+                    <form className="flex flex-col h-full justify-between" onSubmit={handleSubmit}>
+                        <div className="flex flex-col gap-5">
                             <div className="card-input-container">
                                 <Label className="text-center" htmlFor="id">ID</Label>
                                 <Input
@@ -75,10 +75,10 @@ export default function AuthFormCard({ isLoginPage }: AuthFormCardProps) {
                                     />
                                 </div>
                             )}
-                            <Button type="submit" className="w-full">
-                                {isLoginPage ? "Login" : "Sign up"}
-                            </Button>
                         </div>
+                        <Button type="submit" className="w-full">
+                            {isLoginPage ? "Login" : "Sign up"}
+                        </Button>
                     </form>
                 </CardContent>
             </Card>

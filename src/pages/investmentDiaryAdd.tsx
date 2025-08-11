@@ -1,4 +1,4 @@
-export default function InvestmentDiaryAdd() {
+export const InvestmentDiaryAdd = () => {
     return (
         <div>
             InvestmentDiaryAdd
