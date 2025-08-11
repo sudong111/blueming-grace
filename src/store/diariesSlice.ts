@@ -1,9 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import type { diaryInterface } from '@/models/interface';
+import type { DiaryInterface } from '@/models/interface';
 
-const initialState: diaryInterface = {
+const initialState: DiaryInterface = {
     id: 0,
     title: '',
     contents: '',

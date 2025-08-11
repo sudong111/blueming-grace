@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from "@/store";
 import axios, {AxiosError} from "axios";
-import type { diaryInterface } from "@/models/interface";
+import type { DiaryInterface } from "@/models/interface";
 
 export const useDiaries = () => {
     const token = useSelector((state: RootState) => state.login.token);
@@ -17,7 +17,7 @@ export const useDiaries = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.get<diaryInterface[]>(
+            const response = await axios.get<DiaryInterface[]>(
                 "https://the-rich-coding-test1.herokuapp.com/diaries.json",
                 {
                     headers: {

@@ -1,9 +1,9 @@
-import type { diaryAssetInterface, computedAssetInterface } from "@/models/interface.ts";
+import type { DiaryAssetInterface, ComputedAssetInterface } from "@/models/interface.ts";
 
 export const computeAssets = (
-    diaryAssets: diaryAssetInterface[],
+    diaryAssets: DiaryAssetInterface[],
     allAssets: { id: number; ticker: string; price: number }[]
-): computedAssetInterface[] => {
+): ComputedAssetInterface[] => {
     if (allAssets.length === 0 || diaryAssets.length === 0) return [];
 
     return diaryAssets.map(asset => {

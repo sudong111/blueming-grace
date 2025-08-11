@@ -1,24 +1,36 @@
-export interface loginInterface {
+export interface LoginInterface {
     token: string | null;
     userId: number;
     isLoggedIn: boolean;
 }
 
-export interface diaryInterface {
+export interface DiaryInterface {
     id: number;
     title: string;
     contents: string;
     date: string;
 }
 
-export interface assetInterface {
+export interface DiaryAddInterface {
+    title: string;
+    contents: string;
+    date: string;
+}
+
+export interface AssetInterface {
     id: number;
     ticker: string;
     name: string;
     price: number;
 }
 
-export interface diaryAssetInterface {
+export interface AssetAddInterface {
+    ticker: string;
+    amount: number;
+    buy_price: number;
+}
+
+export interface DiaryAssetInterface {
     id: number;
     diary_id: number;
     asset_id: number;
@@ -26,7 +38,7 @@ export interface diaryAssetInterface {
     buy_price: number;
 }
 
-export interface computedAssetInterface {
+export interface ComputedAssetInterface {
     id: number,
     ticker: string,
     buy_price: number,

@@ -10,7 +10,7 @@ export const Login = () => {
     const { loginUser, isLoading } = useLogin();
 
     const handleLogin = async (email: string, password: string) => {
-        try{
+        try {
             const result = await loginUser(email, password);
 
             dispatch(login({ token: result.token, user_id: result.userId }));

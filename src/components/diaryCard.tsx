@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setDairy } from "@/store/diariesSlice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { diaryInterface } from "@/models/interface";
+import type { DiaryInterface } from "@/models/interface";
 
 interface DiaryCardProps {
-    diary: diaryInterface
+    diary: DiaryInterface
 }
 
 export const DiaryCard = ({ diary }: DiaryCardProps) => {

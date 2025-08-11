@@ -8,14 +8,14 @@ import { useDiaries } from "@/hooks/useDiaries";
 import { useAssets } from "@/hooks/useAssets";
 import { Button } from "@/components/ui/button"
 import { FaPlus } from "react-icons/fa";
-import type { diaryInterface } from "@/models/interface";
+import type { DiaryInterface } from "@/models/interface";
 
 export const Home = () => {
     const { isLoggedIn } = useSelector((state: RootState) => state.login);
     const token = useSelector((state: RootState) => state.login.token);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [diaries, setDiaries] = useState<diaryInterface[]>([]);
+    const [diaries, setDiaries] = useState<DiaryInterface[]>([]);
     const { getDiaries, isLoading } = useDiaries();
     const { getAssets } = useAssets();
 

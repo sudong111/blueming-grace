@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import type { RootState } from "@/store";
 import axios, { AxiosError } from "axios";
-import type { assetInterface } from "@/models/interface";
+import type { AssetInterface } from "@/models/interface";
 
 export const useAssets = () => {
     const token = useSelector((state: RootState) => state.login.token);
@@ -12,7 +12,7 @@ export const useAssets = () => {
         }
 
         try {
-            const response = await axios.get<assetInterface[]>(
+            const response = await axios.get<AssetInterface[]>(
                 "https://the-rich-coding-test1.herokuapp.com/assets.json",
                 {
                     headers: {
