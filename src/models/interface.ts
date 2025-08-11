@@ -10,3 +10,18 @@ export interface DiaryInterface {
     contents: string;
     date: string;
 }
+
+export interface AssetInterface {
+    id: number;
+    ticker: string;
+    name: string;
+    price: number;
+}
+
+export interface DiaryAssetInterface {
+    id: number;
+    diary_id: number;
+    asset_id: number;
+    amount: number;
+    buy_price: number;
+}

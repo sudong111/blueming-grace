@@ -1,25 +1,41 @@
+import { useEffect, useState } from "react";
+import {useDispatch, useSelector} from "react-redux";
+import type { RootState } from "@/store";
+import { setAssets } from "@/store/assetsSlice";
 import { InvestmentDiaryCard } from "@/components/investmentDiaryCard";
 import { useInvestmentDiaries } from "@/hooks/useInvestmentDiaries";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
-import {useEffect, useState} from "react";
-import type {DiaryInterface} from "@/models/interface.ts";
+import { useInvestmentAssets } from "@/hooks/useInvestmentAssets";
+import type { DiaryInterface } from "@/models/interface";
 
 export const Home = () => {
     const { isLoggedIn } = useSelector((state: RootState) => state.login);
     const token = useSelector((state: RootState) => state.login.token);
+    const dispatch = useDispatch();
     const [diaries, setDiaries] = useState<DiaryInterface[]>([]);
     const { getInvestmentDiaries, isLoading } = useInvestmentDiaries();
+    const { getAssets } = useInvestmentAssets();
 
     useEffect(() => {
         if (!isLoggedIn) {
             return;
         }
-
-        const loadDiaries = async () => {
+        const loadAssets = async () => {
             try {
-                const data = await getInvestmentDiaries();
-                setDiaries(data ?? []);
+                const result = await getAssets();
+
+                dispatch(setAssets(result));
+
+            } catch (e) {
+                const error = e as Error;
+                alert(error.message);
+            }
+        }
+
+        const loadData = async () => {
+            try {
+                const result = await getInvestmentDiaries();
+
+                setDiaries(result);
 
             } catch (e) {
                 const error = e as Error;
@@ -27,7 +43,8 @@ export const Home = () => {
                 return <div className="p-4 text-red-500">에러가 발생했습니다: {error.message}</div>;
             }
         };
-        loadDiaries();
+        loadData();
+        loadAssets();
     }, [token]);
 
 

@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setDairy } from "@/store/investmentDiariesSlice.ts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DiaryInterface } from "@/models/interface";
-import {useDispatch} from "react-redux";
-import {setDairy} from "@/store/investmentDiariesSlice.ts";
 
 interface DiaryCardProps {
     diary: DiaryInterface

@@ -2,6 +2,8 @@ import {Button} from '@/components/ui/button.tsx'
 import { useNavigate } from 'react-router-dom'
 import type { RootState } from "@/store";
 import { logout } from "@/store/loginSlice";
+import { clearDairy } from "@/store/investmentDiariesSlice";
+import { clearAssets } from "@/store/assetsSlice";
 import { FaHome } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -9,6 +11,12 @@ export const Header = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { isLoggedIn } = useSelector((state: RootState) => state.login);
+
+    const handleLogout = () => {
+        dispatch(logout());
+        dispatch(clearDairy());
+        dispatch(clearAssets());
+    }
 
     return (
         <div className="header">
@@ -37,7 +45,7 @@ export const Header = () => {
                 ) :
                     <Button
                         variant="outline"
-                        onClick={() => dispatch(logout())}
+                        onClick={() => handleLogout() }
                     >
                         logout
                     </Button>
