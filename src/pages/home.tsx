@@ -2,10 +2,34 @@ import { InvestmentDiaryCard } from "@/components/investmentDiaryCard";
 import { useInvestmentDiaries } from "@/hooks/useInvestmentDiaries";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
+import {useEffect, useState} from "react";
+import type {DiaryInterface} from "@/models/interface.ts";
 
 export const Home = () => {
     const { isLoggedIn } = useSelector((state: RootState) => state.login);
-    const { diaries, isLoading, error } = useInvestmentDiaries();
+    const token = useSelector((state: RootState) => state.login.token);
+    const [diaries, setDiaries] = useState<DiaryInterface[]>([]);
+    const { getInvestmentDiaries, isLoading } = useInvestmentDiaries();
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            return;
+        }
+
+        const loadDiaries = async () => {
+            try {
+                const data = await getInvestmentDiaries();
+                setDiaries(data ?? []);
+
+            } catch (e) {
+                const error = e as Error;
+                alert(error.message);
+                return <div className="p-4 text-red-500">에러가 발생했습니다: {error.message}</div>;
+            }
+        };
+        loadDiaries();
+    }, [token]);
+
 
     if (!isLoggedIn) {
         return <div className="p-4">로그인이 필요합니다.</div>;
@@ -13,10 +37,6 @@ export const Home = () => {
 
     if (isLoading) {
         return <div className="p-4">투자 일지 목록을 불러오는 중...</div>;
-    }
-
-    if (error) {
-        return <div className="p-4 text-red-500">에러가 발생했습니다: {error}</div>;
     }
 
     if (diaries.length === 0) {

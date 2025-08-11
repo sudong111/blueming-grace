@@ -9,15 +9,15 @@ export const useLogin = () => {
         try {
             const response = await axios.post(
                 "https://the-rich-coding-test1.herokuapp.com/users/login",
+                new URLSearchParams({
+                    email: email,
+                    password: password,
+                }),
                 {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body:
-                        new URLSearchParams({
-                        "email": email,
-                        "password": password,
-                    }),
+                        "Accept": "application/json",
+                    }
                 }
             );
 

@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import loginReducer from './loginSlice';
+import investmentDiaryReducer from './investmentDiariesSlice'
 import { persistStore } from "redux-persist";
 
 export const store = configureStore({
     reducer: {
         login: loginReducer,
+        investmentDiary: investmentDiaryReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

@@ -1,51 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from "@/store";
 import type { DiaryInterface } from "@/models/interface";
+import axios, {AxiosError} from "axios";
 
 export const useInvestmentDiaries = () => {
     const token = useSelector((state: RootState) => state.login.token);
-    const [diaries, setDiaries] = useState<DiaryInterface[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
+    const getInvestmentDiaries = async () => {
         if (!token) {
             setIsLoading(false);
             return;
         }
 
-        const getDiaries = async () => {
-            try {
-                const response = await fetch(
-                    "https://the-rich-coding-test1.herokuapp.com/diaries.json",
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        },
+        setIsLoading(true);
+
+        try {
+            const response = await axios.get<DiaryInterface[]>(
+                "https://the-rich-coding-test1.herokuapp.com/diaries.json",
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
                     }
-                );
-
-                if (!response.ok) {
-                    alert(`투자 정보 조회에 실패했습니다. ${response.status}`);
-                    return;
                 }
+            );
 
-                const result: DiaryInterface[] = await response.json();
-                setDiaries(result);
+            return response.data;
 
-            } catch (e) {
-                const error = e as Error;
-                setError(error.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+        } catch (e) {
+            const message = (e instanceof AxiosError && e.response?.data?.message)
+                ? e.response.data.message
+                : (e as Error).message;
+            throw new Error(message || "투자 일지 조회에 실패했습니다.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-        getDiaries();
-    }, [token]);
 
-    return { diaries, isLoading, error };
+    return { getInvestmentDiaries, isLoading };
 };
