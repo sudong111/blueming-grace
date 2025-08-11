@@ -25,3 +25,11 @@ export interface DiaryAssetInterface {
     amount: number;
     buy_price: number;
 }
+
+export interface computedAssetInterface {
+    id: number,
+    ticker: string,
+    buy_price: number,
+    present_price: number,
+    rate: number
+}
