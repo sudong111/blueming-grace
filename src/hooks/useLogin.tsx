@@ -1,43 +1,43 @@
-import { useDispatch } from "react-redux";
-import { login } from "@/store/loginSlice";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios, {AxiosError} from 'axios';
 
 export const useLogin = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const loginUser = async (email: string, password: string) => {
-
+        setIsLoading(true);
         try {
-            const response = await fetch(
+            const response = await axios.post(
                 "https://the-rich-coding-test1.herokuapp.com/users/login",
                 {
-                    method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
-                    body: new URLSearchParams({
+                    body:
+                        new URLSearchParams({
                         "email": email,
                         "password": password,
                     }),
                 }
             );
 
-            const result = await response.json();
+            const result = await response.data;
 
             if(result.error) {
-                alert(`${result.message || "Unknown error"}`);
+                throw new Error(`${result.message || "로그인에 실패했습니다."}`);
             }
-            else {
-                dispatch(login({ token: result.token, user_id: result.user_id }));
-                alert(`로그인에 성공했습니다.`);
-                navigate("/");
-            }
+
+            return { token: result.token, userId: result.user_id };
+
         } catch (e) {
-            const error = e as Error;
-            alert(`로그인에 실패했습니다.\n${error.message || "Unknown error"}`);
+            const message = (e instanceof AxiosError && e.response?.data?.message)
+                ? e.response.data.message
+                : (e as Error).message;
+            throw new Error(message || "로그인에 실패했습니다.");
+        } finally {
+            setIsLoading(false);
         }
     }
 
-    return { loginUser };
+    return { loginUser, isLoading };
 }
