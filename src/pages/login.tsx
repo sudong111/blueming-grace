@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "@/store/loginSlice";
 import { useLogin } from "@/hooks/useLogin";
-import { AuthFormCard } from "@/components/authFormCard";
+import { AuthCard } from "@/components/authCard.tsx";
 
 export const Login = () => {
     const dispatch = useDispatch();
@@ -24,7 +24,7 @@ export const Login = () => {
     }
 
     return (
-        <AuthFormCard
+        <AuthCard
             action={handleLogin} type= "login" isLoading={isLoading}
         />
     )

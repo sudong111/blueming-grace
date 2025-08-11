@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setDairy } from "@/store/investmentDiariesSlice.ts";
+import { setDairy } from "@/store/diariesSlice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { DiaryInterface } from "@/models/interface";
+import type { diaryInterface } from "@/models/interface";
 
 interface DiaryCardProps {
-    diary: DiaryInterface
+    diary: diaryInterface
 }
 
-export const InvestmentDiaryCard = ({ diary }: DiaryCardProps) => {
+export const DiaryCard = ({ diary }: DiaryCardProps) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const titleText = diary.title.length === 0
@@ -22,7 +22,7 @@ export const InvestmentDiaryCard = ({ diary }: DiaryCardProps) => {
 
     const handleClick = () => {
         dispatch(setDairy(diary));
-        navigate(`/investment/${ diary.id }`);
+        navigate(`/diary/${ diary.id }`);
     };
     return (
         <div className="card-container items-start" onClick={handleClick}>

@@ -4,21 +4,21 @@ export interface loginInterface {
     isLoggedIn: boolean;
 }
 
-export interface DiaryInterface {
+export interface diaryInterface {
     id: number;
     title: string;
     contents: string;
     date: string;
 }
 
-export interface AssetInterface {
+export interface assetInterface {
     id: number;
     ticker: string;
     name: string;
     price: number;
 }
 
-export interface DiaryAssetInterface {
+export interface diaryAssetInterface {
     id: number;
     diary_id: number;
     asset_id: number;

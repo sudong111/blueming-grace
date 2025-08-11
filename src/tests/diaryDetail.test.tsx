@@ -4,18 +4,18 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store} from '@/store';
 import { vi } from 'vitest';
-import { InvestmentDiaryDetail } from '@/pages/investmentDiaryDetail';
+import { DiaryDetail } from '@/pages/diaryDetail.tsx';
 import { computeAssets } from "@/utils/computedAsset";
 
 const mockGetDiaryAssets = vi.fn();
-vi.mock('@/hooks/useInvestmentDiaryAssets', () => ({
-    useInvestmentDiaryAssets: () => ({
+vi.mock('@/hooks/useDiaryAssets', () => ({
+    useDiaryAssets: () => ({
         getDiaryAssets: mockGetDiaryAssets,
     }),
 }));
 
 store.dispatch({
-    type: 'investmentDiary/setDairy',
+    type: 'diary/setDairy',
     payload: {
         id: 1,
         title: '테스트 일지',
@@ -44,7 +44,7 @@ const mockAssets = {
     ],
 };
 
-describe('InvestmentDiaryDetail & computedAsset', () => {
+describe('DiaryDetail & computedAsset', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -54,7 +54,7 @@ describe('InvestmentDiaryDetail & computedAsset', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <InvestmentDiaryDetail />
+                    <DiaryDetail />
                 </BrowserRouter>
             </Provider>
         );
@@ -68,7 +68,7 @@ describe('InvestmentDiaryDetail & computedAsset', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <InvestmentDiaryDetail />
+                    <DiaryDetail />
                 </BrowserRouter>
             </Provider>
         );
@@ -90,7 +90,7 @@ describe('InvestmentDiaryDetail & computedAsset', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <InvestmentDiaryDetail />
+                    <DiaryDetail />
                 </BrowserRouter>
             </Provider>
         );
@@ -107,7 +107,7 @@ describe('InvestmentDiaryDetail & computedAsset', () => {
         render(
             <Provider store={store}>
                 <BrowserRouter>
-                    <InvestmentDiaryDetail />
+                    <DiaryDetail />
                 </BrowserRouter>
             </Provider>
         );

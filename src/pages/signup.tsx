@@ -1,6 +1,6 @@
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSignup } from "@/hooks/useSignup";
-import { AuthFormCard } from "@/components/authFormCard";
+import { AuthCard } from "@/components/authCard.tsx";
 
 export const Signup = () => {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ export const Signup = () => {
     }
 
     return (
-        <AuthFormCard
+        <AuthCard
             action={handleSignup} type="signup" isLoading={isLoading}
         />
     )

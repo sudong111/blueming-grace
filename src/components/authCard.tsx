@@ -1,16 +1,16 @@
+import { useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
 
-interface  AuthFormCardProps {
+interface  AuthCardProps {
     action: (email: string, password: string) => void;
     type: "login" | "signup";
     isLoading: boolean;
 }
 
-export const AuthFormCard = ({ action, type, isLoading }: AuthFormCardProps) => {
+export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
 
     const isLoginPage = type === "login";
     const emailRef = useRef<HTMLInputElement>(null);
@@ -34,7 +34,7 @@ export const AuthFormCard = ({ action, type, isLoading }: AuthFormCardProps) => 
 
     return (
         <div className="card-container items-center">
-            <Card className="w-[30rem] h-[20rem] flex flex-col">
+            <Card className="w-[20rem] h-[20rem] flex flex-col">
                 <CardHeader className="border-b p-5">
                     <CardTitle>
                         { isLoginPage ? "로그인" : "회원가입" }

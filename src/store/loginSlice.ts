@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import type {loginInterface} from "@/models/interface";
+import type { loginInterface } from "@/models/interface";
 
 const initialState: loginInterface = {
     token: null,

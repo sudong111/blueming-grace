@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useInvestmentDiaryAssets } from "@/hooks/useInvestmentDiaryAssets";
-import type { computedAssetInterface } from "@/models/interface";
+import { useDiaryAssets } from "@/hooks/useDiaryAssets";
 import { computeAssets } from '@/utils/computedAsset';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { computedAssetInterface } from "@/models/interface";
 
-export const InvestmentDiaryDetail = () => {
-    const diary = useSelector((state: RootState) => state.investmentDiary);
+export const DiaryDetail = () => {
+    const diary = useSelector((state: RootState) => state.diary);
     const assets = useSelector((state: RootState) => state.assets);
     const [computedAssets, setComputedAssets] = useState<computedAssetInterface[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { getDiaryAssets } = useInvestmentDiaryAssets(diary.id);
+    const { getDiaryAssets } = useDiaryAssets(diary.id);
     const titleText = diary.title.length === 0
         ? '제목 없음'
         : `<${ diary.title }>`;

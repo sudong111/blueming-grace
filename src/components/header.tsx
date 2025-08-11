@@ -1,11 +1,11 @@
-import {Button} from '@/components/ui/button.tsx'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { logout } from "@/store/loginSlice";
-import { clearDairy } from "@/store/investmentDiariesSlice";
+import { clearDairy } from "@/store/diariesSlice";
 import { clearAssets } from "@/store/assetsSlice";
+import { Button } from '@/components/ui/button'
 import { FaHome } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
 
 export const Header = () => {
     const navigate = useNavigate();

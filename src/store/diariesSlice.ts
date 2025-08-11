@@ -1,9 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import type { DiaryInterface } from '@/models/interface';
+import type { diaryInterface } from '@/models/interface';
 
-const initialState: DiaryInterface = {
+const initialState: diaryInterface = {
     id: 0,
     title: '',
     contents: '',
@@ -16,8 +16,8 @@ const persistConfig = {
     whitelist: ["id", "title", "contents", "date"],
 };
 
-const investmentDiarySlice = createSlice({
-    name: 'investmentDiary',
+const diarySlice = createSlice({
+    name: 'diary',
     initialState,
     reducers: {
         setDairy(state, action: PayloadAction<{ id: number; title: string; contents: string, date: string }>) {
@@ -35,5 +35,5 @@ const investmentDiarySlice = createSlice({
     },
 });
 
-export const { setDairy, clearDairy } = investmentDiarySlice.actions;
-export default persistReducer(persistConfig, investmentDiarySlice.reducer);
+export const { setDairy, clearDairy } = diarySlice.actions;
+export default persistReducer(persistConfig, diarySlice.reducer);

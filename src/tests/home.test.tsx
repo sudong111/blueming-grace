@@ -7,17 +7,17 @@ import { login } from '@/store/loginSlice';
 import { vi, type MockInstance } from 'vitest';
 import { Home } from '@/pages/home';
 
-const mockGetInvestmentDiaries = vi.fn();
-vi.mock('@/hooks/useInvestmentDiaries', () => ({
-    useInvestmentDiaries: () => ({
-        getInvestmentDiaries: mockGetInvestmentDiaries,
+const mockGetDiaries = vi.fn();
+vi.mock('@/hooks/useDiaries', () => ({
+    useDiaries: () => ({
+        getDiaries: mockGetDiaries,
         isLoading: false
     })
 }));
 
 const mockGetAssets = vi.fn();
-vi.mock('@/hooks/useInvestmentAssets', () => ({
-    useInvestmentAssets: () => ({
+vi.mock('@/hooks/useAssets', () => ({
+    useAssets: () => ({
         getAssets: mockGetAssets
     })
 }));
@@ -58,7 +58,7 @@ describe('Home', () => {
         mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
 
-        mockGetInvestmentDiaries.mockResolvedValueOnce([
+        mockGetDiaries.mockResolvedValueOnce([
             { id: 1, title: '첫 투자 일지', contents: '내용', date: '2025-08-11' }
         ]);
         mockGetAssets.mockResolvedValueOnce([{ id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 100 }]);
@@ -81,7 +81,7 @@ describe('Home', () => {
     test('투자 일지 없을 시 "작성된 투자 일지가 없습니다." 출력', async () => {
         mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
 
-        mockGetInvestmentDiaries.mockResolvedValueOnce([]);
+        mockGetDiaries.mockResolvedValueOnce([]);
         mockGetAssets.mockResolvedValueOnce([]);
 
         render(
@@ -100,7 +100,7 @@ describe('Home', () => {
     test('투자 일지 조회 실패 시 alert 호출', async () => {
         mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
 
-        mockGetInvestmentDiaries.mockRejectedValueOnce(new Error('조회 실패'));
+        mockGetDiaries.mockRejectedValueOnce(new Error('조회 실패'));
         mockGetAssets.mockResolvedValueOnce([]);
 
         render(

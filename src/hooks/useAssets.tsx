@@ -1,24 +1,19 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from "@/store";
-import type { DiaryInterface } from "@/models/interface";
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
+import type { assetInterface } from "@/models/interface";
 
-export const useInvestmentDiaries = () => {
+export const useAssets = () => {
     const token = useSelector((state: RootState) => state.login.token);
-    const [isLoading, setIsLoading] = useState(true);
 
-    const getInvestmentDiaries = async () => {
+    const getAssets = async () => {
         if (!token) {
-            setIsLoading(false);
             return [];
         }
 
-        setIsLoading(true);
-
         try {
-            const response = await axios.get<DiaryInterface[]>(
-                "https://the-rich-coding-test1.herokuapp.com/diaries.json",
+            const response = await axios.get<assetInterface[]>(
+                "https://the-rich-coding-test1.herokuapp.com/assets.json",
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -33,12 +28,9 @@ export const useInvestmentDiaries = () => {
             const message = (e instanceof AxiosError && e.response?.data?.message)
                 ? e.response.data.message
                 : (e as Error).message;
-            throw new Error(message || "투자 일지 조회에 실패했습니다.");
-        } finally {
-            setIsLoading(false);
+            throw new Error(message || "자산종목 정보 조회에 실패했습니다.");
         }
-    };
+    }
 
-
-    return { getInvestmentDiaries, isLoading };
+    return { getAssets };
 };
