@@ -50,27 +50,25 @@ export const Home = () => {
         loadAssets();
     }, [token]);
 
-
-    if (!isLoggedIn) {
-        return <div className="p-4">로그인이 필요합니다.</div>;
-    }
-
-    if (isLoading) {
-        return <div className="p-4">투자 일지 목록을 불러오는 중...</div>;
-    }
-
-    if (diaries.length === 0) {
-        return <div className="p-4">작성된 투자 일지가 없습니다.</div>;
-    }
-
     return (
-        <>
-            <p className="text-2xl font-bold mb-4">투자 일지</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                {diaries.map(diary => (
-                    <DiaryCard key={diary.id} diary={diary} />
-                ))}
-            </div>
+        <div className="view">
+            {!isLoggedIn ? (
+                <div className="p-4">로그인이 필요합니다.</div>
+            ) : isLoading ? (
+                <div className="p-4">투자 일지 목록을 불러오는 중...</div>
+            ) : diaries.length === 0 ? (
+                <div className="p-4">작성된 투자 일지가 없습니다.</div>
+            ) : (
+                <>
+                    <p className="text-2xl font-bold mb-4">투자 일지</p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full gap-4">
+                        {diaries.map(diary => (
+                            <DiaryCard key={diary.id} diary={diary} />
+                        ))}
+                    </div>
+                </>
+            )}
+
             <Button
                 variant="add"
                 size="free"
@@ -79,6 +77,6 @@ export const Home = () => {
             >
                 <FaPlus className="text-white" />
             </Button>
-        </>
+        </div>
     );
 };

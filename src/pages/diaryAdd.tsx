@@ -1,15 +1,24 @@
 import { DiaryAddCard } from "@/components/diaryAddCard";
 import { useNavigate } from "react-router-dom";
 import { useDiaryAdd } from "@/hooks/useDiaryAdd";
-import type { DiaryAddInterface } from "@/models/interface";
+import { useDiaryAssetsAdd } from "@/hooks/useDiaryAssetsAdd.tsx";
+import type { AssetAddInterface, DiaryAddInterface } from "@/models/interface";
 
 export const DiaryAdd = () => {
     const navigate = useNavigate();
-    const { insertDiary, isLoading } = useDiaryAdd();
+    const { insertDiary } = useDiaryAdd();
+    const { insertDiaryAssets } = useDiaryAssetsAdd();
 
-    const handleDiaryAdd = async (data : DiaryAddInterface) => {
+    const handleDiaryAdd = async (data : DiaryAddInterface, assets: AssetAddInterface[]) => {
         try {
-            await insertDiary(data);
+            const diary = await insertDiary(data);
+            const diaryId = diary.id;
+
+            const promises = assets.map(asset =>
+                insertDiaryAssets(diaryId, asset)
+            );
+
+            await Promise.all(promises);
 
             alert("투자 일정 등록에 성공했습니다.");
             navigate("/");
@@ -21,8 +30,10 @@ export const DiaryAdd = () => {
 
 
     return (
-        <DiaryAddCard
-            action={ handleDiaryAdd } isLoading={isLoading}
-        />
+        <div className="view justify-center">
+            <DiaryAddCard
+                action={ handleDiaryAdd }
+            />
+        </div>
     )
 }

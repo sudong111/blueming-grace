@@ -1,26 +1,24 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import axios, { AxiosError } from "axios";
-import {useState} from "react";
-import type { DiaryAddInterface } from "@/models/interface.ts";
+import type { AssetAddInterface } from "@/models/interface.ts";
 
-export const useDiaryAdd = () => {
+export const useDiaryAssetsAdd = () => {
     const token = useSelector((state: RootState) => state.login.token);
-    const [isLoading, setIsLoading] = useState(false);
 
-    const insertDiary = async (data : DiaryAddInterface) => {
+    const insertDiaryAssets = async (diaryId : number, asset : AssetAddInterface) => {
         if(!token) {
             throw new Error("token 이 존재하지 않아 투자 일정 생성에 실패했습니다.");
         }
-        setIsLoading(true);
 
         try {
             const response = await axios.post(
-                "https://the-rich-coding-test1.herokuapp.com/diaries.json",
+                "https://the-rich-coding-test1.herokuapp.com/diary_assets.json",
                 new URLSearchParams({
-                    "diary[title]": data.title,
-                    "diary[contents]": data.contents,
-                    "diary[date]": data.date
+                    "diary_asset[diary_id]": diaryId.toString(),
+                    "diary_asset[asset_id]": asset.id.toString(),
+                    "diary_asset[amount]": asset.amount.toString(),
+                    "diary_asset[buy_price]": asset.buy_price.toString()
                 }),
                 {
                     headers: {
@@ -32,6 +30,7 @@ export const useDiaryAdd = () => {
             );
 
             const result = await response.data;
+
             if(result.error) {
                 throw new Error(result.error);
             }
@@ -45,5 +44,5 @@ export const useDiaryAdd = () => {
             throw new Error(message || "투자 일정 생성에 실패했습니다.");
         }
     }
-    return { insertDiary, isLoading };
+    return { insertDiaryAssets };
 }

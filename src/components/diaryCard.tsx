@@ -19,11 +19,11 @@ export const DiaryCard = ({ diary }: DiaryCardProps) => {
         ? '내용 없음'
         : diary.contents;
 
-
     const handleClick = () => {
         dispatch(setDairy(diary));
         navigate(`/diary/${ diary.id }`);
     };
+
     return (
         <div className="card-container items-start" onClick={handleClick}>
             <Card className="w-full h-[20rem] flex flex-col hover:bg-gray-100">

@@ -8,9 +8,7 @@ export const App = () => {
     <div className="wrapper">
         <BrowserRouter>
             <Header />
-            <div className="view">
-                <Router />
-            </div>
+            <Router />
         </BrowserRouter>
     </div>
   )

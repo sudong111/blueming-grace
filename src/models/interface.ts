@@ -25,7 +25,8 @@ export interface AssetInterface {
 }
 
 export interface AssetAddInterface {
-    ticker: string;
+    id: number;
+    ticker?: string;
     amount: number;
     buy_price: number;
 }

@@ -1,22 +1,26 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { AddAsset } from "@/components/addAsset";
-import type { DiaryAddInterface } from "@/models/interface";
+import type { AssetAddInterface, DiaryAddInterface } from "@/models/interface";
 
 interface DiaryAddCardProps {
-    action: (data: DiaryAddInterface) => void;
-    isLoading: boolean;
+    action: (data: DiaryAddInterface, addAssets: AssetAddInterface[]) => void;
 }
 
-export const DiaryAddCard = ({ action, isLoading}: DiaryAddCardProps) => {
+export const DiaryAddCard = ({ action}: DiaryAddCardProps) => {
 
     const titleRef = useRef<HTMLInputElement | null>(null);
     const contentsRef = useRef<HTMLTextAreaElement | null>(null);
     const dateRef = useRef<HTMLInputElement | null>(null);
+    const [assets, setAssets] = useState<AssetAddInterface[]>([]);
+
+    const handleAssetsChange = (addAssets: AssetAddInterface[]) => {
+        setAssets(addAssets);
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,7 +29,7 @@ export const DiaryAddCard = ({ action, isLoading}: DiaryAddCardProps) => {
         const date = dateRef.current?.value || "";
 
         const formData: DiaryAddInterface = { title, contents, date };
-        action(formData);
+        action(formData, assets);
     }
 
     return (
@@ -60,8 +64,8 @@ export const DiaryAddCard = ({ action, isLoading}: DiaryAddCardProps) => {
                                 ref={ contentsRef }
                             ></Textarea>
                         </div>
-                        <AddAsset/>
-                        <Button type="submit" className="w-full" disabled={isLoading}>
+                        <AddAsset assets={assets} onAssetsChange={handleAssetsChange} />
+                        <Button type="submit" className="w-full" >
                             투자 일지 저장
                         </Button>
                     </form>
