@@ -1,18 +1,12 @@
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
 import axios, { AxiosError } from "axios";
-import {useState} from "react";
-import type { DiaryAddInterface } from "@/models/interface.ts";
+import type { DiaryAddInterface } from "@/models/interface";
 
 export const useDiaryAdd = () => {
-    const token = useSelector((state: RootState) => state.login.token);
-    const [isLoading, setIsLoading] = useState(false);
 
-    const insertDiary = async (data : DiaryAddInterface) => {
+    const insertDiary = async (data : DiaryAddInterface, token: string | null) => {
         if(!token) {
             throw new Error("token 이 존재하지 않아 투자 일정 생성에 실패했습니다.");
         }
-        setIsLoading(true);
 
         try {
             const response = await axios.post(
@@ -32,8 +26,9 @@ export const useDiaryAdd = () => {
             );
 
             const result = await response.data;
+
             if(result.error) {
-                throw new Error(result.error);
+                throw new Error(`${result.message || "투자 일정 생성에 실패했습니다."}`);
             }
 
             return result;
@@ -45,5 +40,5 @@ export const useDiaryAdd = () => {
             throw new Error(message || "투자 일정 생성에 실패했습니다.");
         }
     }
-    return { insertDiary, isLoading };
+    return { insertDiary };
 }

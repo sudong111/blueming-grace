@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "@/store/loginSlice";
 import { useLogin } from "@/hooks/useLogin";
-import { AuthCard } from "@/components/authCard.tsx";
+import { AuthCard } from "@/components/authCard";
 
 export const Login = () => {
     const dispatch = useDispatch();

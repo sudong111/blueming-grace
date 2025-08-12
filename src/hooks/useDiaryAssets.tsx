@@ -1,14 +1,14 @@
-import { useSelector } from 'react-redux';
-import type { RootState } from "@/store";
-import axios, { AxiosError } from "axios";
-import type { DiaryAssetInterface } from "@/models/interface";
+import axios, {AxiosError} from "axios";
+import type {DiaryAssetInterface} from "@/models/interface";
 
 export const useDiaryAssets = (diaryId: number) => {
-    const token = useSelector((state: RootState) => state.login.token);
 
-    const getDiaryAssets = async () => {
-        if (!token) {
-            return [];
+    const getDiaryAssets = async (token: string | null) => {
+        if(!token) {
+            throw new Error("token 이 존재하지 않아 투자 종목 조회에 실패했습니다.");
+        }
+        if (diaryId === -1) {
+            throw new Error("투자 일정이 존재하지 않아 투자 종목 조회에 실패했습니다.");
         }
 
         try {
@@ -28,7 +28,7 @@ export const useDiaryAssets = (diaryId: number) => {
             const message = (e instanceof AxiosError && e.response?.data?.message)
                 ? e.response.data.message
                 : (e as Error).message;
-            throw new Error(message || "투자일지 속 자산 정보 조회에 실패했습니다.");
+            throw new Error(message || "투자 종목 조회에 실패했습니다.");
         }
     }
 

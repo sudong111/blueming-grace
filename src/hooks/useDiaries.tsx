@@ -1,19 +1,14 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import type { RootState } from "@/store";
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import type { DiaryInterface } from "@/models/interface";
 
 export const useDiaries = () => {
-    const token = useSelector((state: RootState) => state.login.token);
     const [isLoading, setIsLoading] = useState(true);
 
-    const getDiaries = async () => {
+    const getDiaries = async (token: string | null) => {
         if (!token) {
-            setIsLoading(false);
-            return [];
+            throw new Error("token 이 존재하지 않아 투자 일지 조회에 실패했습니다.");
         }
-
         setIsLoading(true);
 
         try {

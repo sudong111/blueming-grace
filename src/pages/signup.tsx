@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "@/hooks/useSignup";
-import { AuthCard } from "@/components/authCard.tsx";
+import { AuthCard } from "@/components/authCard";
 
 export const Signup = () => {
     const navigate = useNavigate();

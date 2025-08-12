@@ -14,14 +14,19 @@ vi.mock('@/hooks/useDiaryAssets', () => ({
     }),
 }));
 
+vi.mock('react-router-dom', async () => {
+    const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
+    return {
+        ...actual,
+        useParams: () => ({ id: '1' }),
+    };
+});
+
 store.dispatch({
-    type: 'diary/setDairy',
-    payload: {
-        id: 1,
-        title: '테스트 일지',
-        contents: '내용',
-        date: '2025-08-11',
-    }
+    type: 'diaries/setDiaries',
+    payload:[
+        { id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }
+    ]
 });
 
 store.dispatch({
@@ -59,7 +64,7 @@ describe('DiaryDetail & computedAsset', () => {
             </Provider>
         );
 
-        expect(screen.getByText(/목록을 불러오는 중/)).toBeInTheDocument();
+        expect(screen.getByText(/투자 일지를 불러오는 중/)).toBeInTheDocument();
     });
 
     test('자산 목록이 잘 렌더링 되는지', async () => {
@@ -84,7 +89,7 @@ describe('DiaryDetail & computedAsset', () => {
         });
     });
 
-    test('자산이 없으면 "없음" 표시', async () => {
+    test('자산이 없을 때 메세지 출력', async () => {
         mockGetDiaryAssets.mockResolvedValueOnce([]);
 
         render(
@@ -96,7 +101,7 @@ describe('DiaryDetail & computedAsset', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText('없음')).toBeInTheDocument();
+            expect(screen.getByText('투자한 종목이 없습니다.')).toBeInTheDocument();
         });
     });
 

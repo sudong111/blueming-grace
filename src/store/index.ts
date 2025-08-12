@@ -7,7 +7,7 @@ import assetsReducer from './assetsSlice'
 export const store = configureStore({
     reducer: {
         login: loginReducer,
-        diary: diaryReducer,
+        diaries: diaryReducer,
         assets: assetsReducer
     },
     middleware: (getDefaultMiddleware) =>

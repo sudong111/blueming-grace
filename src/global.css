@@ -18,16 +18,20 @@ body {
     @apply sticky top-0 z-10 w-full border-b bg-white border-gray-200
 }
 
-.card-input-container {
-    @apply grid grid-cols-[30%_auto] items-center gap-2;
-}
-
 .container {
     @apply flex gap-3 mx-3 w-full items-center
 }
 
+.card-input-container {
+    @apply grid grid-cols-[30%_auto] items-center gap-2;
+}
+
 .card-container {
     @apply flex justify-center
+}
+
+.input-container {
+    @apply flex flex-col;
 }
 
 @layer base {

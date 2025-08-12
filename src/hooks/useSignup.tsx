@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios, {AxiosError} from 'axios';
+import axios, { AxiosError } from 'axios';
 
 export const useSignup = () => {
     const [isLoading, setIsLoading] = useState(false);

@@ -1,87 +1,44 @@
 import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
+import { useParams } from "react-router-dom";
 import type { RootState } from '@/store';
 import { useDiaryAssets } from "@/hooks/useDiaryAssets";
 import { computeAssets } from '@/utils/computedAsset';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DiaryDetailView } from "@/components/diaryDetailView";
 import type { ComputedAssetInterface } from "@/models/interface";
 
 export const DiaryDetail = () => {
-    const diary = useSelector((state: RootState) => state.diary);
+    const token = useSelector((state: RootState) => state.login.token);
+    const diaries = useSelector((state: RootState) => state.diaries.data);
     const assets = useSelector((state: RootState) => state.assets);
+    const { id } = useParams<{ id: string }>();
+    const diary = diaries.find(diary => diary.id.toString() === id);
     const [computedAssets, setComputedAssets] = useState<ComputedAssetInterface[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { getDiaryAssets } = useDiaryAssets(diary.id);
-    const titleText = diary.title.length === 0
-        ? '제목 없음'
-        : `<${ diary.title }>`;
-
-    const contentsText = diary.contents.length === 0
-        ? '내용 없음'
-        : diary.contents;
+    const { getDiaryAssets } = useDiaryAssets(diary ? diary.id : -1);
 
     useEffect(() => {
+        if (!diary) return;
+
         const loadData = async () => {
             setIsLoading(true);
             try {
-                const data = await getDiaryAssets();
+                const data = await getDiaryAssets(token);
 
                 setComputedAssets(computeAssets(data, assets.data));
-
             } catch (e) {
-                const error = e as Error;
-                alert(error.message);
-                setIsLoading(false);
+                alert((e as Error).message);
             } finally {
                 setIsLoading(false);
             }
         };
 
         loadData();
-    }, []);
+    }, [diary, assets.data]);
 
     return (
         <div className="view justify-center">
-            {isLoading ? (
-                <div className="p-4">목록을 불러오는 중...</div>
-                ) : (
-                <div className="card-container items-center">
-                    <Card className="min-w-96 flex flex-col">
-                        <CardHeader className="w-full border-b p-5 text-center">
-                            <CardTitle>{new Date(diary.date).toLocaleDateString()}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex flex-col max-w-2xl p-5 flex-1 text-center gap-3">
-                            <div className="border mb-2 p-3">
-                                <p className="font-bold">{ titleText }</p>
-                            </div>
-                            <div className="border p-3">
-                                <p>{ contentsText }</p>
-                            </div>
-                            <p className="text-left">투자한 종목들</p>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {computedAssets && computedAssets.length > 0 ? (
-                                    computedAssets.map(asset => (
-                                        <Card key={asset.id} className="flex flex-col">
-                                            <CardHeader className="p-2 border-b break-words whitespace-normal">
-                                                <CardTitle><p>{asset.ticker}</p></CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="p-2 break-words whitespace-normal">
-                                                <p>매수가 : ${asset.buy_price}</p>
-                                                <p>현재가</p>
-                                                <p>${asset.present_price}</p>
-                                                <p>수익률</p>
-                                                <p>{asset.rate}%</p>
-                                            </CardContent>
-                                        </Card>
-                                    ))
-                                ) : (
-                                    <p>없음</p>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-                )}
+            <DiaryDetailView diary={diary || undefined} computedAssets={computedAssets} isLoading={isLoading} />
         </div>
-    )
-}
+    );
+};

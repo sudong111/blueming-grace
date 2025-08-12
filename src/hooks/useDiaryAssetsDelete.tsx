@@ -1,13 +1,10 @@
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
 import axios, { AxiosError } from "axios";
 
 export const useDiaryAssetsDelete = () => {
-    const token = useSelector((state: RootState) => state.login.token);
 
-    const deleteDairyAssets = async (diary_asset_id: number) => {
+    const deleteDiaryAssets = async (diary_asset_id: number, token: string | null) => {
         if(!token) {
-            throw new Error("token 이 유효하지 않습니다.");
+            throw new Error("token 이 존재하지 않아 투자 종목 삭제에 실패했습니다.");
         }
 
         try {
@@ -26,8 +23,8 @@ export const useDiaryAssetsDelete = () => {
             const message = (e instanceof AxiosError && e.response?.data?.error)
                 ? e.response.data.message
                 : (e as Error).message;
-            throw new Error(message || "투자 자산 삭제에 실패했습니다.");
+            throw new Error(message || "투자 종목 삭제에 실패했습니다.");
         }
     }
-    return { deleteDairyAssets };
+    return { deleteDiaryAssets };
 }

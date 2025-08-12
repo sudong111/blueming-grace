@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setDairy } from "@/store/diariesSlice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DiaryInterface } from "@/models/interface";
 
@@ -10,17 +8,10 @@ interface DiaryCardProps {
 
 export const DiaryCard = ({ diary }: DiaryCardProps) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const titleText = diary.title.length === 0
-        ? '제목 없음'
-        : `<${ diary.title }>`;
-
-    const contentsText = diary.contents.length === 0
-        ? '내용 없음'
-        : diary.contents;
+    const titleText = diary.title.length === 0 ? '제목 없음' : `<${ diary.title }>`;
+    const contentsText = diary.contents.length === 0 ? '내용 없음' : diary.contents;
 
     const handleClick = () => {
-        dispatch(setDairy(diary));
         navigate(`/diary/${ diary.id }`);
     };
 

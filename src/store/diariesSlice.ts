@@ -3,37 +3,32 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import type { DiaryInterface } from '@/models/interface';
 
-const initialState: DiaryInterface = {
-    id: 0,
-    title: '',
-    contents: '',
-    date: '',
+interface DiariesInterface {
+    data: DiaryInterface[]
+}
+
+const initialState: DiariesInterface = {
+    data: []
 };
 
 const persistConfig = {
-    key: "dairy",
+    key: "diaries",
     storage,
-    whitelist: ["id", "title", "contents", "date"],
+    whitelist: ["data"],
 };
 
-const diarySlice = createSlice({
-    name: 'diary',
+const diariesSlice = createSlice({
+    name: 'diaries',
     initialState,
     reducers: {
-        setDairy(state, action: PayloadAction<{ id: number; title: string; contents: string, date: string }>) {
-            state.id = action.payload.id;
-            state.title = action.payload.title;
-            state.contents = action.payload.contents;
-            state.date = action.payload.date;
+        setDiaries(state, action: PayloadAction<DiaryInterface[]>) {
+            state.data = action.payload;
         },
-        clearDairy(state) {
-            state.id = 0;
-            state.title = '';
-            state.contents = '';
-            state.date = '';
+        clearDiaries(state) {
+            state.data = [];
         },
     },
 });
 
-export const { setDairy, clearDairy } = diarySlice.actions;
-export default persistReducer(persistConfig, diarySlice.reducer);
+export const { setDiaries, clearDiaries } = diariesSlice.actions;
+export default persistReducer(persistConfig, diariesSlice.reducer);

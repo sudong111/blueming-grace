@@ -9,9 +9,10 @@ import type { AssetAddInterface, DiaryAddInterface } from "@/models/interface";
 
 interface DiaryAddCardProps {
     action: (data: DiaryAddInterface, addAssets: AssetAddInterface[]) => void;
+    isLoading: boolean;
 }
 
-export const DiaryAddCard = ({ action}: DiaryAddCardProps) => {
+export const DiaryAddCard = ({ action, isLoading }: DiaryAddCardProps) => {
 
     const titleRef = useRef<HTMLInputElement | null>(null);
     const contentsRef = useRef<HTMLTextAreaElement | null>(null);
@@ -39,33 +40,21 @@ export const DiaryAddCard = ({ action}: DiaryAddCardProps) => {
                     <CardTitle>투자 일지 등록</CardTitle>
                 </CardHeader>
                 <CardContent className="p-5 flex-1">
-                    <form className="flex flex-col gap-5" onSubmit={ handleSubmit }>
-                        <div className="flex flex-col">
+                    <form className="input-container gap-5" onSubmit={ handleSubmit }>
+                        <div className="input-container">
                             <Label className="mb-2" htmlFor="date">투자 날짜</Label>
-                            <Input
-                                id="date"
-                                type="date"
-                                ref={ dateRef }
-                            ></Input>
+                            <Input id="date" type="date" ref={ dateRef }></Input>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="input-container">
                             <Label className="mb-2" htmlFor="title">투자 일지 제목</Label>
-                            <Input
-                                id="title"
-                                type="text"
-                                ref={ titleRef }
-                            ></Input>
+                            <Input id="title" type="text" ref={ titleRef }></Input>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="input-container">
                             <Label className="mb-2" htmlFor="contents">투자 일지 내용</Label>
-                            <Textarea
-                                id="contents"
-                                className="min-h-28"
-                                ref={ contentsRef }
-                            ></Textarea>
+                            <Textarea id="contents" className="min-h-28" ref={ contentsRef }></Textarea>
                         </div>
-                        <AddAsset assets={assets} onAssetsChange={handleAssetsChange} />
-                        <Button type="submit" className="w-full" >
+                        <AddAsset assets={assets} onAssetsChange={ handleAssetsChange } />
+                        <Button type="submit" className="w-full" disabled={isLoading} >
                             투자 일지 저장
                         </Button>
                     </form>

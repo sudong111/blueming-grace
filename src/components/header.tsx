@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { logout } from "@/store/loginSlice";
-import { clearDairy } from "@/store/diariesSlice";
+import { clearDiaries } from "@/store/diariesSlice";
 import { clearAssets } from "@/store/assetsSlice";
 import { Button } from '@/components/ui/button'
 import { FaHome } from "react-icons/fa";
@@ -14,7 +14,7 @@ export const Header = () => {
 
     const handleLogout = () => {
         dispatch(logout());
-        dispatch(clearDairy());
+        dispatch(clearDiaries());
         dispatch(clearAssets());
     }
 
