@@ -1,9 +1,12 @@
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
 import axios, { AxiosError } from "axios";
 import type { AssetInterface } from "@/models/interface";
 
 export const useAssets = () => {
+    const token = useSelector((state: RootState) => state.login.token);
 
-    const getAssets = async (token: string | null) => {
+    const getAssets = async () => {
         if (!token) {
             throw new Error("token 이 존재하지 않아 전체 투자 종목 조회에 실패했습니다.");
         }

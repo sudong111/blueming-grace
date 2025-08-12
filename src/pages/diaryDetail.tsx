@@ -8,7 +8,6 @@ import { DiaryDetailView } from "@/components/diaryDetailView";
 import type { ComputedAssetInterface } from "@/models/interface";
 
 export const DiaryDetail = () => {
-    const token = useSelector((state: RootState) => state.login.token);
     const diaries = useSelector((state: RootState) => state.diaries.data);
     const assets = useSelector((state: RootState) => state.assets);
     const { id } = useParams<{ id: string }>();
@@ -23,7 +22,7 @@ export const DiaryDetail = () => {
         const loadData = async () => {
             setIsLoading(true);
             try {
-                const data = await getDiaryAssets(token);
+                const data = await getDiaryAssets();
 
                 setComputedAssets(computeAssets(data, assets.data));
             } catch (e) {

@@ -26,7 +26,7 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
         onAssetsChange(
             assets.map((asset, i) =>
                 i === index
-                    ? { ...asset, [field]: field === "ticker" ? value : Number(value) }
+                    ? { ...asset, [field]: Number(value) }
                     : asset
             )
         );
@@ -46,10 +46,10 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
                     className="grid grid-cols-[30%_30%_30%_10%] justify-items-center"
                 >
                     <Select
-                        value={asset.id.toString()}
+                        value={asset.id ? asset.id.toString() : ''}
                         onValueChange={(value) => handleChange(index, "id", value)}
                     >
-                        <SelectTrigger className="">
+                        <SelectTrigger>
                             <SelectValue placeholder="선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -67,6 +67,7 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
                         onChange={(e) => handleChange(index, "amount", e.target.value)}
                         min={0}
                         className="max-w-24"
+                        aria-label="수량"
                     />
                     <Input
                         id={`buy_price-${index}`}
@@ -75,6 +76,7 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
                         onChange={(e) => handleChange(index, "buy_price", e.target.value)}
                         min={0}
                         className="max-w-24"
+                        aria-label="매수 가격"
                     />
                     <Button variant="ghost" type="button" onClick={ () => deleteAddAssetField(index) }>
                         X

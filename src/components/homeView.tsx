@@ -6,11 +6,11 @@ import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 
 interface HomeViewProps {
-    isLoggedIn: boolean,
     isLoading: boolean
 }
 
-export const HomeView = ({ isLoggedIn, isLoading }: HomeViewProps) => {
+export const HomeView = ({ isLoading }: HomeViewProps) => {
+    const { isLoggedIn } = useSelector((state: RootState) => state.login);
     const diaries = useSelector((state: RootState) => state.diaries.data)
     const navigate = useNavigate();
 

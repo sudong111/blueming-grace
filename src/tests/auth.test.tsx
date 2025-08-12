@@ -43,7 +43,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-describe('Login', () => {
+describe('Login Test', () => {
     test('로그인 성공 시 alert 호출 및 페이지 이동', async () => {
         mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
 

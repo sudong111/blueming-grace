@@ -20,8 +20,8 @@ export const Home = () => {
         const loadAll = async () => {
             try {
                 const [diariesResult, assetsResult] = await Promise.all([
-                    getDiaries(token),
-                    getAssets(token)
+                    getDiaries(),
+                    getAssets()
                 ]);
 
                 dispatch(setDiaries(diariesResult));
@@ -37,10 +37,7 @@ export const Home = () => {
 
     return (
         <div className="view">
-            <HomeView
-                isLoggedIn= { isLoggedIn }
-                isLoading= { isLoading }
-            />
+            <HomeView isLoading= { isLoading } />
         </div>
     );
 };

@@ -67,7 +67,7 @@ describe('DiaryDetail & computedAsset', () => {
         expect(screen.getByText(/투자 일지를 불러오는 중/)).toBeInTheDocument();
     });
 
-    test('자산 목록이 잘 렌더링 되는지', async () => {
+    test('첫 화면 렌더링 확인', async () => {
         mockGetDiaryAssets.mockResolvedValueOnce(mockDiaryAssets);
 
         render(

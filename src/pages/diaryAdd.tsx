@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
 import { useDiaryAdd } from "@/hooks/useDiaryAdd";
 import { useDiaryAssetsAdd } from "@/hooks/useDiaryAssetsAdd.tsx";
 import { DiaryAddCard } from "@/components/diaryAddCard";
@@ -8,7 +6,6 @@ import type { AssetAddInterface, DiaryAddInterface } from "@/models/interface";
 import {useState} from "react";
 
 export const DiaryAdd = () => {
-    const token = useSelector((state: RootState) => state.login.token);
     const navigate = useNavigate();
     const { insertDiary } = useDiaryAdd();
     const { insertDiaryAssets } = useDiaryAssetsAdd();
@@ -18,11 +15,11 @@ export const DiaryAdd = () => {
         try {
             setIsLoading(true);
 
-            const diary = await insertDiary(data, token);
+            const diary = await insertDiary(data);
             const diaryId = diary.id;
 
             const promises = assets.map(asset =>
-                insertDiaryAssets(diaryId, asset, token)
+                insertDiaryAssets(diaryId, asset)
             );
 
             await Promise.all(promises);

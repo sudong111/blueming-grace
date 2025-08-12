@@ -1,9 +1,12 @@
 import axios, { AxiosError } from "axios";
 import type { DiaryAddInterface } from "@/models/interface";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/store";
 
 export const useDiaryAdd = () => {
+    const token = useSelector((state: RootState) => state.login.token);
 
-    const insertDiary = async (data : DiaryAddInterface, token: string | null) => {
+    const insertDiary = async (data : DiaryAddInterface) => {
         if(!token) {
             throw new Error("token 이 존재하지 않아 투자 일정 생성에 실패했습니다.");
         }

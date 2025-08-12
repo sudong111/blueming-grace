@@ -1,9 +1,12 @@
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
 import axios, { AxiosError } from "axios";
 import type { AssetAddInterface } from "@/models/interface.ts";
 
 export const useDiaryAssetsAdd = () => {
+    const token = useSelector((state: RootState) => state.login.token);
 
-    const insertDiaryAssets = async (diaryId: number, asset: AssetAddInterface, token: string | null) => {
+    const insertDiaryAssets = async (diaryId: number, asset: AssetAddInterface) => {
         if(!token) {
             throw new Error("token 이 존재하지 않아 투자 종목 생성에 실패했습니다.");
         }

@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 
 export const useDiaryDelete = () => {
 
-    const insertDiary = async (diary_id: number, token: string | null) => {
+    const deleteDiary = async (diary_id: number, token: string | null) => {
         if(!token) {
             throw new Error("token 이 존재하지 않아 투자 일정 삭제에 실패했습니다.");
         }
@@ -26,5 +26,5 @@ export const useDiaryDelete = () => {
             throw new Error(message || "투자 일정 삭제에 실패했습니다.");
         }
     }
-    return { insertDiary };
+    return { deleteDiary };
 }
