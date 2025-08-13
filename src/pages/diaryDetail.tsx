@@ -1,25 +1,27 @@
 import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import type { RootState } from '@/store';
 import { useDiaryAssets } from "@/hooks/useDiaryAssets";
+import { useDiaryDelete } from "@/hooks/useDiaryDelete";
+import { useDiaryAssetsDelete } from "@/hooks/useDiaryAssetsDelete";
 import { computeAssets } from '@/utils/computedAsset';
 import { DiaryDetailCard } from "@/components/diaryDetailCard";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirmDialog";
+import { FaTrashAlt } from "react-icons/fa";
 import type { ComputedAssetInterface } from "@/models/interface";
-import {Button} from "@/components/ui/button.tsx";
-import {FaTrashAlt} from "react-icons/fa";
-import {ConfirmDialog} from "@/components/confirmDialog.tsx";
-import {useDiaryDelete} from "@/hooks/useDiaryDelete.tsx";
-import {useDiaryAssetsDelete} from "@/hooks/useDiaryAssetsDelete.tsx";
 
 export const DiaryDetail = () => {
+    const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleteLoading, setIsDeleteLoading] = useState(false);
     const [computedAssets, setComputedAssets] = useState<ComputedAssetInterface[]>([]);
     const diaries = useSelector((state: RootState) => state.diaries.data);
-    const navigate = useNavigate();
     const assets = useSelector((state: RootState) => state.assets);
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const diary = diaries.find(diary => diary.id.toString() === id);
     const { getDiaryAssets } = useDiaryAssets(diary ? diary.id : -1);
@@ -27,11 +29,11 @@ export const DiaryDetail = () => {
     const { deleteDiaryAssets } = useDiaryAssetsDelete();
 
     const handleDeleteDiary = async () => {
+        if(!diary) {
+            toast.error("투자 일지 삭제 실패: 투자 일지가 존재하지 않습니다.");
+            return;
+        }
         try {
-            if(!diary) {
-                return new Error("투자 일지가 존재하지 않아 삭제에 실패했습니다.");
-            }
-
             setIsDeleteLoading(true);
             const promises = computedAssets.map(asset =>
                 deleteDiaryAssets(asset.id)
@@ -42,35 +44,42 @@ export const DiaryDetail = () => {
 
         } catch (e) {
             const error = e as Error;
-            alert(error.message);
+            toast.error(`투자 일지 삭제 실패: ${error.message}`);
         } finally {
             setIsDeleteLoading(false);
         }
         setIsDialogOpen(false);
-        alert("삭제 완료했습니다.");
+        toast.success(`투자 일지(${diary.title})를 성공적으로 삭제했습니다.`);
         navigate("/");
     };
 
     useEffect(() => {
         if (!diary) return;
+        if (isLoggedIn) {
+            const loadData = async () => {
+                setIsLoading(true);
+                try {
+                    const data = await getDiaryAssets();
 
-        const loadData = async () => {
-            setIsLoading(true);
-            try {
-                const data = await getDiaryAssets();
+                    setComputedAssets(computeAssets(data, assets.data));
 
-                setComputedAssets(computeAssets(data, assets.data));
-            } catch (e) {
-                alert((e as Error).message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+                } catch (e) {
+                    const error = e as Error;
+                    toast.error(`투자 종목 조회 실패: ${error.message}`);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
 
-        loadData();
+            loadData();
+        }
     }, [diary, assets.data]);
 
-    return (
+    return !isLoggedIn ? (
+        <div className="view">
+            <div className="p-4" aria-label="alert_text">로그인이 필요합니다.</div>
+        </div>
+    ) : (
         <div className="view justify-center">
             <DiaryDetailCard diary={diary || undefined} computedAssets={computedAssets} isLoading={isLoading} />
             {diary &&
@@ -80,6 +89,7 @@ export const DiaryDetail = () => {
                         size="free"
                         className="diary-delete-button"
                         onClick={() => setIsDialogOpen(true)}
+                        aria-label="button"
                     >
                         <FaTrashAlt className="diary-add-text" />
                     </Button>
@@ -95,6 +105,6 @@ export const DiaryDetail = () => {
                 </>
             }
         </div>
-
     );
+
 };

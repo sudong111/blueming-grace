@@ -35,10 +35,10 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
     return (
         <div className="flex flex-col gap-3">
             <div className="grid grid-cols-[30%_30%_30%_10%] justify-items-center items-center">
-                <Label>종목 티커명</Label>
-                <Label>수량</Label>
-                <Label>매수 가격</Label>
-                <Button type="button" onClick={ insertAddAssetField }>+</Button>
+                <Label aria-label="ticker_title">종목 티커명</Label>
+                <Label aria-label="amount_title">수량</Label>
+                <Label aria-label="buy_price_title">매수 가격</Label>
+                <Button type="button" onClick={ insertAddAssetField } aria-label="insert_asset_button">+</Button>
             </div>
             {assets.map((asset, index) => (
                 <div
@@ -67,7 +67,7 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
                         onChange={(e) => handleChange(index, "amount", e.target.value)}
                         min={0}
                         className="max-w-24"
-                        aria-label="수량"
+                        aria-label="amount"
                     />
                     <Input
                         id={`buy_price-${index}`}
@@ -76,7 +76,7 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
                         onChange={(e) => handleChange(index, "buy_price", e.target.value)}
                         min={0}
                         className="max-w-24"
-                        aria-label="매수 가격"
+                        aria-label="buy_price"
                     />
                     <Button variant="ghost" type="button" onClick={ () => deleteAddAssetField(index) }>
                         X

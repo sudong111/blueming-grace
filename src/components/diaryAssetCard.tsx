@@ -14,24 +14,24 @@ export const DiaryAssetCard = ({ asset }: DiaryAssetCardProps) => {
     return (
         <Card key={asset.id} className="flex flex-col">
             <CardHeader className="p-2 text-center break-words whitespace-normal">
-                <CardTitle><p>{asset.ticker}</p></CardTitle>
+                <CardTitle><p aria-label="ticker">{asset.ticker}</p></CardTitle>
             </CardHeader>
             <CardContent className="p-2 break-words whitespace-normal">
                 <div>
                     <p className="description-text">보유 수량</p>
-                    <p>{asset.amount}</p>
+                    <p aria-label="amount">{asset.amount}</p>
                 </div>
                 <div>
                     <p className="description-text">매수가</p>
-                    <p>${asset.buy_price}</p>
+                    <p aria-label="buy_price">${asset.buy_price}</p>
                 </div>
                 <div>
                     <p className="description-text">현재가</p>
-                    <p>${asset.present_price}</p>
+                    <p aria-label="present_price">${asset.present_price}</p>
                 </div>
                 <div>
                     <p className="description-text">수익률</p>
-                    <p className={rate_class}>{asset.rate}%</p>
+                    <p className={rate_class} aria-label="rate">{asset.rate}%</p>
                 </div>
             </CardContent>
         </Card>

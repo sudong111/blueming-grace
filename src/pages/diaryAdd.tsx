@@ -1,45 +1,52 @@
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import type { RootState } from "@/store";
 import { useDiaryAdd } from "@/hooks/useDiaryAdd";
-import { useDiaryAssetsAdd } from "@/hooks/useDiaryAssetsAdd.tsx";
+import { useDiaryAssetsAdd } from "@/hooks/useDiaryAssetsAdd";
 import { DiaryAddCard } from "@/components/diaryAddCard";
 import type { AssetAddInterface, DiaryAddInterface } from "@/models/interface";
-import {useState} from "react";
 
 export const DiaryAdd = () => {
+    const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
     const navigate = useNavigate();
     const { insertDiary } = useDiaryAdd();
     const { insertDiaryAssets } = useDiaryAssetsAdd();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleDiaryAdd = async (data : DiaryAddInterface, assets: AssetAddInterface[]) => {
-        try {
-            setIsLoading(true);
+        if (isLoggedIn) {
+            try {
+                setIsLoading(true);
 
-            const diary = await insertDiary(data);
-            const diaryId = diary.id;
+                const diary = await insertDiary(data);
+                const diaryId = diary.id;
 
-            const promises = assets.map(asset =>
-                insertDiaryAssets(diaryId, asset)
-            );
+                const promises = assets.map(asset =>
+                    insertDiaryAssets(diaryId, asset)
+                );
 
-            await Promise.all(promises);
+                await Promise.all(promises);
 
-            alert("투자 일정 등록에 성공했습니다.");
-            navigate("/");
-        } catch (e) {
-            const error = e as Error;
-            alert(error.message);
-        } finally {
-            setIsLoading(false);
+                toast.success("투자 일지 등록에 성공했습니다.");
+                navigate("/");
+            } catch (e) {
+                const error = e as Error;
+                toast.error(`투자 일지 등록 실패: ${error.message}`);
+            } finally {
+                setIsLoading(false);
+            }
         }
     }
 
-
-    return (
-        <div className="view justify-center">
-            <DiaryAddCard
-                action={ handleDiaryAdd } isLoading={ isLoading }
-            />
+    return !isLoggedIn ? (
+        <div className="view">
+            <div className="p-4" aria-label="alert_text">로그인이 필요합니다.</div>
         </div>
-    )
+    ) : (
+        <div className="view justify-center">
+            <DiaryAddCard action={handleDiaryAdd} isLoading={isLoading} />
+        </div>
+    );
 }

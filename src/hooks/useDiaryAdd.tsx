@@ -1,14 +1,14 @@
-import axios, { AxiosError } from "axios";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import axios from "axios";
 import type { DiaryAddInterface } from "@/models/interface";
-import {useSelector} from "react-redux";
-import type {RootState} from "@/store";
 
 export const useDiaryAdd = () => {
     const token = useSelector((state: RootState) => state.login.token);
 
     const insertDiary = async (data : DiaryAddInterface) => {
         if(!token) {
-            throw new Error("token 이 존재하지 않아 투자 일정 생성에 실패했습니다.");
+            throw new Error("token 이 존재하지 않습니다.");
         }
 
         try {
@@ -31,16 +31,23 @@ export const useDiaryAdd = () => {
             const result = await response.data;
 
             if(result.error) {
-                throw new Error(`${result.message || "투자 일정 생성에 실패했습니다."}`);
+                throw new Error(`${result.message || "관리자에게 문의하세요."}`);
             }
 
             return result;
 
         } catch (e) {
-            const message = (e instanceof AxiosError && e.response?.data?.error)
-                ? e.response.data.message
-                : (e as Error).message;
-            throw new Error(message || "투자 일정 생성에 실패했습니다.");
+            let message = "관리자에게 문의하세요.";
+
+            if (axios.isAxiosError(e)) {
+                // 서버에서 message를 내려줬다면 사용, 없으면 기본 메시지
+                message = e.response?.data?.message ?? message;
+            } else if (e instanceof Error) {
+                // 일반 Error 객체면 그 message 사용
+                message = e.message || message;
+            }
+
+            throw new Error(message);
         }
     }
     return { insertDiary };

@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { toast } from "react-toastify";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -24,7 +25,7 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
         const passwordCheck = passwordCheckRef.current?.value || "";
 
         if (!isLoginPage && password !== passwordCheck) {
-            alert(`비밀번호가 일치하지 않습니다.`);
+            toast.error("회원가입 실패: 비밀번호가 일치하지 않습니다.");
             return;
         }
 
@@ -36,7 +37,7 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
         <div className="card-container items-center max-w-[25rem] w-full mx-auto">
             <Card className=" flex flex-col w-full gap-5">
                 <CardHeader className="border-b p-5">
-                    <CardTitle>
+                    <CardTitle aria-label="title">
                         { isLoginPage ? "로그인" : "회원가입" }
                     </CardTitle>
                 </CardHeader>
@@ -76,7 +77,7 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
                                 </div>
                             )}
                         </div>
-                        <Button type="submit" className="w-full" disabled={isLoading}>
+                        <Button type="submit" className="w-full" disabled={isLoading} aria-label="button">
                             { isLoginPage ? "로그인" : "회원가입" }
                         </Button>
                     </form>

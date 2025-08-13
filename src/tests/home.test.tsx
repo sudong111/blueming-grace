@@ -1,11 +1,24 @@
 import '@testing-library/jest-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { toast, type Id } from "react-toastify";
+import {vi, type MockInstance, expect} from 'vitest';
 import { store } from '@/store';
-import { login } from '@/store/loginSlice';
-import { vi, type MockInstance } from 'vitest';
+import { login, logout } from '@/store/loginSlice';
 import { Home } from '@/pages/home';
+import { HomeView } from "@/components/homeView.tsx";
+
+let toastErrorSpy: MockInstance;
+
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async (importOriginal) => {
+    const originalModule = await importOriginal<typeof import('react-router-dom')>();
+    return {
+        ...originalModule,
+        useNavigate: () => mockNavigate,
+    };
+});
 
 const mockGetDiaries = vi.fn();
 vi.mock('@/hooks/useDiaries', () => ({
@@ -17,9 +30,7 @@ vi.mock('@/hooks/useDiaries', () => ({
 
 const mockGetAssets = vi.fn();
 vi.mock('@/hooks/useAssets', () => ({
-    useAssets: () => ({
-        getAssets: mockGetAssets
-    })
+    useAssets: () => ({getAssets: mockGetAssets})
 }));
 
 const mockLoginUser = vi.fn();
@@ -30,10 +41,8 @@ vi.mock('@/hooks/useLogin', () => ({
     }),
 }));
 
-let alertSpy: MockInstance<(message?: string) => void>;
-
 beforeEach(() => {
-    alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    toastErrorSpy = vi.spyOn(toast, 'error').mockImplementation(() => 1 as Id);
     vi.clearAllMocks();
 });
 
@@ -41,8 +50,10 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-describe('Home', () => {
-    test('비로그인 시 "로그인이 필요합니다." 출력', () => {
+describe('Home Test', () => {
+    test('로그아웃일 때 화면 렌더링', () => {
+        store.dispatch(logout());
+
         render(
             <Provider store={store}>
                 <BrowserRouter>
@@ -51,16 +62,72 @@ describe('Home', () => {
             </Provider>
         );
 
-        expect(screen.getByText('로그인이 필요합니다.')).toBeInTheDocument();
+        expect(screen.getByLabelText('alert_text')).toHaveTextContent('로그인이 필요합니다.');
     });
 
-    test('투자 일지와 자산 불러오기 성공 시 렌더링', async () => {
-        mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
+    test('로딩 중일 때 화면 렌더링', () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        mockGetDiaries.mockReturnValueOnce(new Promise(() => {}));
 
-        mockGetDiaries.mockResolvedValueOnce([
-            { id: 1, title: '첫 투자 일지', contents: '내용', date: '2025-08-11' }
-        ]);
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <HomeView isLoading={true}/>
+                </BrowserRouter>
+            </Provider>
+        );
+
+        expect(screen.getByLabelText('alert_text')).toHaveTextContent(/투자 일지 목록을 불러오는 중/);
+    });
+
+    test('투자 일지가 없을 때 화면 렌더링', () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        mockGetDiaries.mockResolvedValueOnce([]);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Home />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        expect(screen.getByLabelText('alert_text')).toHaveTextContent('작성된 투자 일지가 없습니다.');
+    });
+
+    test('투자 종목이 없을 때 화면 렌더링', () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        mockGetAssets.mockRejectedValueOnce([]);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Home />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        expect(screen.getByLabelText('assets-alert-text')).toHaveTextContent('*종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.');
+    });
+
+    test('투자 일지 추가 버튼 클릭시 페이지 이동', () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        mockGetDiaries.mockResolvedValueOnce([]);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Home />
+                </BrowserRouter>
+            </Provider>
+        );
+        fireEvent.click(screen.getByLabelText('add_diary_button'));
+        expect(mockNavigate).toHaveBeenCalledWith('/diary/add');
+    });
+
+    test('투자 일지 조회 성공시 화면 렌더링', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        mockGetDiaries.mockResolvedValueOnce([{ id: 1, title: '첫 투자 일지', contents: '내용', date: '2025-08-11' }]);
         mockGetAssets.mockResolvedValueOnce([{ id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 100 }]);
 
         render(
@@ -72,17 +139,17 @@ describe('Home', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText(/첫 투자 일지/)).toBeInTheDocument();
+            expect(screen.getByLabelText('date')).toHaveTextContent('2025. 8. 11.');
+            expect(screen.getByLabelText('title')).toHaveTextContent('첫 투자 일지');
+            expect(screen.getByLabelText('contents')).toHaveTextContent('내용');
         });
 
         expect(mockGetAssets).toHaveBeenCalled();
     });
 
-    test('투자 일지 없을 시 "작성된 투자 일지가 없습니다." 출력', async () => {
-        mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
-
-        mockGetDiaries.mockResolvedValueOnce([]);
-        mockGetAssets.mockResolvedValueOnce([]);
+    test('토큰 없이 투자 일지 조회 에러 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+        mockGetDiaries.mockRejectedValueOnce(new Error("token 이 존재하지 않습니다."));
 
         render(
             <Provider store={store}>
@@ -93,15 +160,13 @@ describe('Home', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText('작성된 투자 일지가 없습니다.')).toBeInTheDocument();
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 일지 조회 실패: token 이 존재하지 않습니다.');
         });
     });
 
-    test('투자 일지 조회 실패 시 alert 호출', async () => {
-        mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
-
-        mockGetDiaries.mockRejectedValueOnce(new Error('조회 실패'));
-        mockGetAssets.mockResolvedValueOnce([]);
+    test('투자 일지 조회 에러 출력', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        mockGetDiaries.mockRejectedValueOnce(new Error('관리자에게 문의하세요.'));
 
         render(
             <Provider store={store}>
@@ -112,7 +177,42 @@ describe('Home', () => {
         );
 
         await waitFor(() => {
-            expect(alertSpy).toHaveBeenCalledWith('조회 실패');
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 일지 조회 실패: 관리자에게 문의하세요.');
+        });
+    });
+
+    test('토큰 없이 투자 종목 조회 에러 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+        mockGetAssets.mockRejectedValueOnce(new Error("token 이 존재하지 않습니다."));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Home />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 종목 조회 실패: token 이 존재하지 않습니다.');
+        });
+    });
+
+    test('투자 종목 조회 에러 출력', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        mockGetAssets.mockRejectedValueOnce(new Error('관리자에게 문의하세요.'));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Home />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        expect(screen.getByLabelText('assets-alert-text')).toHaveTextContent('*종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.');
+        await waitFor(() => {
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 종목 조회 실패: 관리자에게 문의하세요.');
         });
     });
 });

@@ -19,17 +19,17 @@ export const DiaryCard = ({ diary }: DiaryCardProps) => {
         <div className="card-container items-start" onClick={handleClick}>
             <Card className="home-diary-card">
                 <CardHeader className="text-center">
-                    <CardTitle className="pb-2 text-xl">{new Date(diary.date).toLocaleDateString()}</CardTitle>
+                    <CardTitle className="pb-2 text-xl" aria-label="date">{new Date(diary.date).toLocaleDateString()}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col max-w-2xl p-5 flex-1 gap-5">
                     <div className="border-b pb-1">
                         <p className="description-text">title</p>
-                        <p className="font-bold text-xl">{ titleText }</p>
+                        <p className="font-bold text-xl" aria-label="title">{ titleText }</p>
                     </div>
                     <div>
                         <p className="description-text pb-1">contents</p>
                         <div className="line-clamp-3">
-                            <p>{ contentsText }</p>
+                            <p aria-label="contents">{ contentsText }</p>
                         </div>
                     </div>
                 </CardContent>

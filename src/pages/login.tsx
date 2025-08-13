@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { login } from "@/store/loginSlice";
 import { useLogin } from "@/hooks/useLogin";
 import { AuthCard } from "@/components/authCard";
@@ -14,12 +15,12 @@ export const Login = () => {
             const result = await loginUser(email, password);
 
             dispatch(login({ token: result.token, user_id: result.userId }));
-            alert(`로그인에 성공했습니다.`);
+            toast.success('로그인에 성공했습니다.');
             navigate("/");
 
         } catch (e) {
             const error = e as Error;
-            alert(error.message);
+            toast.error(`로그인 실패: ${error.message}`);
         }
     }
 

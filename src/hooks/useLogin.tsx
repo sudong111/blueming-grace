@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 export const useLogin = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -24,16 +24,23 @@ export const useLogin = () => {
             const result = await response.data;
 
             if(result.error) {
-                throw new Error(`${result.message || "로그인에 실패했습니다."}`);
+                throw new Error(`${result.message || "관리자에게 문의하세요."}`);
             }
 
             return { token: result.token, userId: result.user_id };
 
         } catch (e) {
-            const message = (e instanceof AxiosError && e.response?.data?.message)
-                ? e.response.data.message
-                : (e as Error).message;
-            throw new Error(message || "로그인에 실패했습니다.");
+            let message = "관리자에게 문의하세요.";
+
+            if (axios.isAxiosError(e)) {
+                // 서버에서 message를 내려줬다면 사용, 없으면 기본 메시지
+                message = e.response?.data?.message ?? message;
+            } else if (e instanceof Error) {
+                // 일반 Error 객체면 그 message 사용
+                message = e.message || message;
+            }
+
+            throw new Error(message);
         } finally {
             setIsLoading(false);
         }

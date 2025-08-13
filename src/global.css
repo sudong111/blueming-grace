@@ -62,7 +62,7 @@ body {
 }
 
 .login-button {
-    @apply bg-gradient-to-br hover:shadow-sm hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-110
+    @apply bg-gradient-to-br hover:shadow-sm hover:shadow-blue-500/50 transition-all duration-300 transform
 }
 
 .home-diary-card {

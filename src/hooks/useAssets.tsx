@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import type { AssetInterface } from "@/models/interface";
 
 export const useAssets = () => {
@@ -8,7 +8,7 @@ export const useAssets = () => {
 
     const getAssets = async () => {
         if (!token) {
-            throw new Error("token 이 존재하지 않아 전체 투자 종목 조회에 실패했습니다.");
+            throw new Error("token 이 존재하지 않습니다.");
         }
 
         try {
@@ -25,10 +25,17 @@ export const useAssets = () => {
             return response.data;
 
         } catch (e) {
-            const message = (e instanceof AxiosError && e.response?.data?.message)
-                ? e.response.data.message
-                : (e as Error).message;
-            throw new Error(message || "전체 투자 종목 조회에 실패했습니다.");
+            let message = "관리자에게 문의하세요.";
+
+            if (axios.isAxiosError(e)) {
+                // 서버에서 message를 내려줬다면 사용, 없으면 기본 메시지
+                message = e.response?.data?.message ?? message;
+            } else if (e instanceof Error) {
+                // 일반 Error 객체면 그 message 사용
+                message = e.message || message;
+            }
+
+            throw new Error(message);
         }
     }
 

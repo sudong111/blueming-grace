@@ -4,7 +4,7 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  plugins: [require("tailwindcss-animate"), require('@tailwindcss/line-clamp')],
+  plugins: [require("tailwindcss-animate")],
     theme: {
     	extend: {
 			fontFamily: {

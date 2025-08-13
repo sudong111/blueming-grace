@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useSignup } from "@/hooks/useSignup";
 import { AuthCard } from "@/components/authCard";
 
@@ -10,11 +11,11 @@ export const Signup = () => {
         try{
             await signupUser(email, password);
 
-            alert(`회원가입에 성공했습니다.`);
+            toast.success("회원가입에 성공했습니다.");
             navigate("/");
         } catch (e) {
             const error = e as Error;
-            alert(error.message);
+            toast.error(`회원가입 실패: ${error.message}`);
         }
     }
 

@@ -1,74 +1,105 @@
 import '@testing-library/jest-dom';
-import { render, screen, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { store} from '@/store';
-import { vi } from 'vitest';
-import { DiaryDetail } from '@/pages/diaryDetail.tsx';
-import { computeAssets } from "@/utils/computedAsset";
+import { Provider } from 'react-redux';
+import { toast, type Id } from 'react-toastify';
+import { vi, type MockInstance, expect } from 'vitest';
+import { store } from '@/store';
+import { login, logout } from "@/store/loginSlice";
+import { setDiaries } from "@/store/diariesSlice";
+import { setAssets } from "@/store/assetsSlice";
+import { DiaryDetail } from '@/pages/diaryDetail';
 
-const mockGetDiaryAssets = vi.fn();
-vi.mock('@/hooks/useDiaryAssets', () => ({
-    useDiaryAssets: () => ({
-        getDiaryAssets: mockGetDiaryAssets,
-    }),
-}));
+let toastSuccessSpy: MockInstance;
+let toastErrorSpy: MockInstance;
 
-vi.mock('react-router-dom', async () => {
-    const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async (importOriginal) => {
+    const originalModule = await importOriginal<typeof import('react-router-dom')>();
     return {
-        ...actual,
+        ...originalModule,
+        useNavigate: () => mockNavigate,
         useParams: () => ({ id: '1' }),
     };
 });
 
-store.dispatch({
-    type: 'diaries/setDiaries',
-    payload:[
-        { id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }
-    ]
+const mockGetDiaryAssets = vi.fn();
+vi.mock('@/hooks/useDiaryAssets', () => ({
+    useDiaryAssets: () => ({ getDiaryAssets: mockGetDiaryAssets }),
+}));
+
+const mockDeleteDiary = vi.fn();
+vi.mock('@/hooks/useDiaryDelete', () => ({
+    useDiaryDelete: () => ({ deleteDiary: mockDeleteDiary }),
+}));
+
+const mockDeleteDiaryAssets = vi.fn();
+vi.mock('@/hooks/useDiaryAssetsDelete', () => ({
+    useDiaryAssetsDelete: () => ({ deleteDiaryAssets: mockDeleteDiaryAssets }),
+}));
+
+beforeEach(() => {
+    toastSuccessSpy = vi.spyOn(toast, 'success').mockImplementation(() => 1 as Id);
+    toastErrorSpy = vi.spyOn(toast, 'error').mockImplementation(() => 1 as Id);
+    vi.clearAllMocks();
 });
 
-store.dispatch({
-    type: 'assets/setAssets',
-    payload: [
-        {id: 1, ticker: 'AAA', price: 200},
-        {id: 2, ticker: 'BBB', price: 600},
-    ]
+afterEach(() => {
+    vi.restoreAllMocks();
 });
 
-const mockDiaryAssets = [
-    { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
-    { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
-];
+describe('DiaryDetail Test', () => {
+    test('로그아웃일 때 화면 렌더링', () => {
+        store.dispatch(logout());
 
-const mockAssets = {
-    data: [
-        { id: 1, ticker: 'AAPL', name: '첫 번째 자산', price: 200 },
-        { id: 2, ticker: 'TSLA', name: '두 번째 자산', price: 600 },
-    ],
-};
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
 
-describe('DiaryDetail & computedAsset', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
+        expect(screen.getByLabelText('alert_text')).toHaveTextContent('로그인이 필요합니다.');
     });
 
-    test('로딩 중일 때 메시지 출력', () => {
+    test('투자 일지가 없을 때 화면 렌더링', () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([]));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        expect(screen.getByLabelText('alert_text')).toHaveTextContent('해당 투자 일지를 찾을 수 없습니다.');
+    });
+
+    test('투자 종목이 없을 때 화면 렌더링', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([]));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('diary_assets_alert_text')).toHaveTextContent('투자한 종목이 없습니다.');
+        });
+    });
+
+    test('로딩 중일 때 화면 렌더링', () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
         mockGetDiaryAssets.mockReturnValueOnce(new Promise(() => {}));
-        render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <DiaryDetail />
-                </BrowserRouter>
-            </Provider>
-        );
-
-        expect(screen.getByText(/투자 일지를 불러오는 중/)).toBeInTheDocument();
-    });
-
-    test('첫 화면 렌더링 확인', async () => {
-        mockGetDiaryAssets.mockResolvedValueOnce(mockDiaryAssets);
 
         render(
             <Provider store={store}>
@@ -78,81 +109,252 @@ describe('DiaryDetail & computedAsset', () => {
             </Provider>
         );
 
-        await waitFor(() => {
-            expect(screen.getByText(/테스트 일지/)).toBeInTheDocument();
-            expect(screen.getByText(/AAA/)).toBeInTheDocument();
-            expect(screen.getByText(/\$400/)).toBeInTheDocument();
-            expect(screen.getByText(/\$200/)).toBeInTheDocument();
-            expect(screen.getByText(/BBB/)).toBeInTheDocument();
-            expect(screen.getByText(/\$500/)).toBeInTheDocument();
-            expect(screen.getByText(/\$600/)).toBeInTheDocument();
-        });
+        expect(screen.getByLabelText('alert_text')).toHaveTextContent(/투자 일지를 불러오는 중/);
     });
 
-    test('자산이 없을 때 메세지 출력', async () => {
-        mockGetDiaryAssets.mockResolvedValueOnce([]);
-
-        render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <DiaryDetail />
-                </BrowserRouter>
-            </Provider>
-        );
-
-        await waitFor(() => {
-            expect(screen.getByText('투자한 종목이 없습니다.')).toBeInTheDocument();
-        });
-    });
-
-    test('에러 발생 시 alert 호출', async () => {
-        const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-        mockGetDiaryAssets.mockRejectedValueOnce(new Error('에러 발생'));
-
-        render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <DiaryDetail />
-                </BrowserRouter>
-            </Provider>
-        );
-
-        await waitFor(() => {
-            expect(alertSpy).toHaveBeenCalledWith('에러 발생');
-        });
-    });
-
-    test('투자 일지 자산 정보가 없으면 빈 배열을 반환한다', () => {
-        const result = computeAssets([], mockAssets.data);
-        expect(result).toEqual([]);
-    });
-
-    test('전체 자산 정보가 없으면 빈 배열을 반환한다', () => {
-        const result = computeAssets(mockDiaryAssets, []);
-        expect(result).toEqual([]);
-    });
-
-
-    test('올바른 자산 데이터가 있으면 수익률을 계산한다', () => {
-
-        const result = computeAssets(mockDiaryAssets, mockAssets.data);
-
-        expect(result).toEqual([
-            {
-                id: 1,
-                ticker: 'AAPL',
-                buy_price: 400,
-                present_price: 200,
-                rate: -50,
-            },
-            {
-                id: 2,
-                ticker: 'TSLA',
-                buy_price: 500,
-                present_price: 600,
-                rate: 20,
-            }
+    test('투자 일지 및 투자 종목 조회시 화면 렌더링', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+            {id: 2, ticker: 'BBB', name: 'BBB_name', price: 600},
+        ]));
+        mockGetDiaryAssets.mockReturnValueOnce([
+            { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
+            { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
         ]);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('date')).toHaveTextContent('2025. 8. 11.');
+            expect(screen.getByLabelText('title')).toHaveTextContent('테스트 일지');
+            expect(screen.getByLabelText('contents')).toHaveTextContent('내용');
+            expect(screen.getAllByLabelText('ticker')[0]).toHaveTextContent('AAA');
+            expect(screen.getAllByLabelText('ticker')[1]).toHaveTextContent('BBB');
+            expect(screen.getAllByLabelText('amount')[0]).toHaveTextContent('10');
+            expect(screen.getAllByLabelText('amount')[1]).toHaveTextContent('40');
+            expect(screen.getAllByLabelText('buy_price')[0]).toHaveTextContent('400');
+            expect(screen.getAllByLabelText('buy_price')[1]).toHaveTextContent('500');
+            expect(screen.getAllByLabelText('present_price')[0]).toHaveTextContent('200');
+            expect(screen.getAllByLabelText('present_price')[1]).toHaveTextContent('600');
+            expect(screen.getAllByLabelText('rate')[0]).toHaveTextContent('-50%');
+            expect(screen.getAllByLabelText('rate')[1]).toHaveTextContent('20%');
+        });
+    });
+
+    test('토큰 없이 투자 종목 조회시 에러 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        mockGetDiaryAssets.mockRejectedValueOnce(new Error("token 이 존재하지 않습니다."));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 종목 조회 실패: token 이 존재하지 않습니다.');
+        });
+    });
+
+    test('투자 종목 조회시 에러 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        mockGetDiaryAssets.mockRejectedValueOnce(new Error("관리자에게 문의하세요."));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 종목 조회 실패: 관리자에게 문의하세요.');
+        });
+    });
+
+    test('투자 일지 삭제 버튼 클릭시 Dialog 렌더링', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+            {id: 2, ticker: 'BBB', name: 'BBB_name', price: 600},
+        ]));
+        mockGetDiaryAssets.mockReturnValueOnce([
+            { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
+            { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
+        ]);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            fireEvent.click(screen.getByLabelText('button'));
+            expect(screen.getByLabelText('dialog_title')).toHaveTextContent('투자 일지 삭제');
+            expect(screen.getByLabelText('dialog_desc')).toHaveTextContent('Delete Dialog');
+            expect(screen.getByLabelText('dialog_contents')).toHaveTextContent('정말 투자 일지 (테스트 일지)를 삭제하시겠습니까?');
+            expect(screen.getByLabelText('dialog_cancel_button')).toHaveTextContent('Cancel');
+            expect(screen.getByLabelText('dialog_approve_button')).toHaveTextContent('Delete');
+        });
+    });
+
+    test('투자 일지 삭제 성공시 페이지 이동 및 알람 출력', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+            {id: 2, ticker: 'BBB', name: 'BBB_name', price: 600},
+        ]));
+        mockGetDiaryAssets.mockReturnValueOnce([
+            { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
+            { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
+        ]);
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(screen.getByLabelText('button'));
+        fireEvent.click(screen.getByLabelText('dialog_approve_button'));
+
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('/');
+        });
+        expect(toastSuccessSpy).toHaveBeenCalledWith('투자 일지(테스트 일지)를 성공적으로 삭제했습니다.');
+
+    });
+
+    test('토큰 없이 투자 일지 속 종목 삭제시 에러 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+            {id: 2, ticker: 'BBB', name: 'BBB_name', price: 600},
+        ]));
+        mockGetDiaryAssets.mockReturnValueOnce([
+            { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
+            { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
+        ]);
+        mockDeleteDiaryAssets.mockRejectedValueOnce(new Error("token 이 존재하지 않습니다."));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            fireEvent.click(screen.getByLabelText('button'));
+            fireEvent.click(screen.getByLabelText('dialog_approve_button'));
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 일지 삭제 실패: token 이 존재하지 않습니다.');
+        });
+    });
+
+    test('투자 일지 속 종목 삭제시 에러 출력', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+            {id: 2, ticker: 'BBB', name: 'BBB_name', price: 600},
+        ]));
+        mockGetDiaryAssets.mockReturnValueOnce([
+            { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
+            { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
+        ]);
+        mockDeleteDiaryAssets.mockRejectedValueOnce(new Error("관리자에게 문의하세요."));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            fireEvent.click(screen.getByLabelText('button'));
+            fireEvent.click(screen.getByLabelText('dialog_approve_button'));
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 일지 삭제 실패: 관리자에게 문의하세요.');
+        });
+    });
+
+    test('토큰 없이 투자 일지 삭제시 에러 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+            {id: 2, ticker: 'BBB', name: 'BBB_name', price: 600},
+        ]));
+        mockGetDiaryAssets.mockReturnValueOnce([
+            { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
+            { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
+        ]);
+        mockDeleteDiary.mockRejectedValueOnce(new Error("token 이 존재하지 않습니다."));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            fireEvent.click(screen.getByLabelText('button'));
+            fireEvent.click(screen.getByLabelText('dialog_approve_button'));
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 일지 삭제 실패: token 이 존재하지 않습니다.');
+        });
+    });
+
+    test('투자 일지 삭제시 에러 출력', async () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+            {id: 2, ticker: 'BBB', name: 'BBB_name', price: 600},
+        ]));
+        mockGetDiaryAssets.mockReturnValueOnce([
+            { id: 1, diary_id: 1, asset_id: 1, amount: 10, buy_price: 400 },
+            { id: 2, diary_id: 1, asset_id: 2, amount: 40, buy_price: 500 }
+        ]);
+        mockDeleteDiary.mockRejectedValueOnce(new Error("관리자에게 문의하세요."));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryDetail />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            fireEvent.click(screen.getByLabelText('button'));
+            fireEvent.click(screen.getByLabelText('dialog_approve_button'));
+            expect(toastErrorSpy).toHaveBeenCalledWith('투자 일지 삭제 실패: 관리자에게 문의하세요.');
+        });
     });
 });
 

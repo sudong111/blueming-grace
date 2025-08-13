@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 export const useSignup = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -22,17 +22,24 @@ export const useSignup = () => {
             const result = await response.data;
 
             if(result.error) {
-                throw new Error(`${result.message || "회원가입에 실패했습니다."}`);
+                throw new Error(`${result.message || "관리자에게 문의하세요."}`);
             }
 
             return;
 
         } catch (e) {
-            // return 값이 message 가 아니고 email 로 옴
-            const message = (e instanceof AxiosError && e.response?.data?.email)
-                ? e.response.data.email
-                : (e as Error).message;
-            throw new Error(message || "회원가입에 실패했습니다.");
+            let message = "관리자에게 문의하세요.";
+
+            if (axios.isAxiosError(e)) {
+                // 서버에서 message를 내려줬다면 사용, 없으면 기본 메시지
+                // 회원가입은 email 로 error message 전송
+                message = e.response?.data?.email ?? message;
+            } else if (e instanceof Error) {
+                // 일반 Error 객체면 그 message 사용
+                message = e.message || message;
+            }
+
+            throw new Error(message);
         } finally {
             setIsLoading(false);
         }
