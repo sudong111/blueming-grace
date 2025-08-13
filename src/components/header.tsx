@@ -16,6 +16,7 @@ export const Header = () => {
         dispatch(logout());
         dispatch(clearDiaries());
         dispatch(clearAssets());
+        navigate("/");
     }
 
     return (
@@ -24,6 +25,7 @@ export const Header = () => {
                 <Button
                     variant="ghost"
                     onClick={() => navigate("/")}
+                    className="header-button"
                 >
                     <FaHome/>
                 </Button>
@@ -32,12 +34,14 @@ export const Header = () => {
                         <Button
                             variant="default"
                             onClick={() => navigate("/login")}
+                            className="login-button"
                         >
                             login
                         </Button>
                         <Button
                             variant="outline"
                             onClick={() => navigate("/signup")}
+                            className="header-button"
                         >
                             sign-up
                         </Button>
@@ -46,6 +50,7 @@ export const Header = () => {
                     <Button
                         variant="outline"
                         onClick={() => handleLogout() }
+                        className="header-button"
                     >
                         logout
                     </Button>

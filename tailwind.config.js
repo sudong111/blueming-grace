@@ -4,9 +4,12 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require('@tailwindcss/line-clamp')],
     theme: {
     	extend: {
+			fontFamily: {
+				sans: ['"Noto Sans KR"', '"Roboto Condensed"', 'sans-serif'],
+			},
     		borderRadius: {
     			lg: 'var(--radius)',
     			md: 'calc(var(--radius) - 2px)',

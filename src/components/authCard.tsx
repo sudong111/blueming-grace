@@ -33,15 +33,15 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
 
 
     return (
-        <div className="card-container items-center">
-            <Card className="w-[20rem] h-[20rem] flex flex-col">
+        <div className="card-container items-center max-w-[25rem] w-full mx-auto">
+            <Card className=" flex flex-col w-full gap-5">
                 <CardHeader className="border-b p-5">
                     <CardTitle>
                         { isLoginPage ? "로그인" : "회원가입" }
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="p-5 flex-1">
-                    <form className="flex flex-col h-full justify-between" onSubmit={ handleSubmit }>
+                <CardContent className="p-3 flex-1 ">
+                    <form className="flex flex-col gap-20 justify-between" onSubmit={ handleSubmit }>
                         <div className="flex flex-col gap-5">
                             <div className="card-input-container">
                                 <Label className="text-center" htmlFor="id">ID</Label>
@@ -50,6 +50,7 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
                                     type="text"
                                     placeholder="blueming@example.com"
                                     ref={ emailRef }
+                                    className="w-full"
                                 />
                             </div>
                             <div className="card-input-container">
@@ -59,6 +60,7 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
                                     type="password"
                                     placeholder="password"
                                     ref={ passwordRef }
+                                    className="w-full"
                                 />
                             </div>
                             { isLoginPage ? <></> : (
@@ -69,6 +71,7 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
                                         type="password"
                                         placeholder="password"
                                         ref={ passwordCheckRef }
+                                        className="w-full"
                                     />
                                 </div>
                             )}

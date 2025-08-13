@@ -15,7 +15,8 @@ body {
 }
 
 .header {
-    @apply sticky top-0 z-10 w-full border-b bg-white border-gray-200
+    @apply sticky top-0 z-10 w-full border-b  border-gray-200
+    bg-white/20 backdrop-blur-md shadow-md
 }
 
 .container {
@@ -32,6 +33,37 @@ body {
 
 .input-container {
     @apply flex flex-col;
+}
+
+/*components*/
+
+.diary-add-button {
+    @apply fixed right-10 bottom-10 w-12 h-12 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br
+    from-green-100 via-green-500 to-green-700
+    shadow-lg shadow-green-800 hover:shadow-xl hover:shadow-green-500/70
+    transition-all duration-300 transform hover:scale-110
+    flex items-center justify-center;
+}
+
+.diary-add-text {
+    @apply text-white !w-[1.5rem] !h-[1.5rem] drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]
+}
+
+.header-button {
+    @apply bg-gradient-to-br hover:!bg-white hover:shadow-sm hover:shadow-blue-500/50 transition-all duration-300 transform
+}
+
+.login-button {
+    @apply bg-gradient-to-br hover:shadow-sm hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-110
+}
+
+.home-diary-card {
+    @apply w-full h-[20rem] flex flex-col cursor-pointer select-none
+    bg-gradient-to-br hover:shadow-sm hover:shadow-blue-500/70 transition-all duration-300 transform
+}
+
+.description-text {
+    @apply font-extralight text-sm;
 }
 
 @layer base {

@@ -17,7 +17,7 @@ export const DiaryDetailView = ({diary, computedAssets, isLoading}: DiaryDetailV
         return <div className="p-4">투자 일지를 불러오는 중...</div>;
     }
 
-    const titleText = diary.title.length === 0 ? '제목 없음' : `<${ diary.title }>`;
+    const titleText = diary.title.length === 0 ? '제목 없음' : diary.title;
     const contentsText = diary.contents.length === 0 ? '내용 없음' : diary.contents;
 
     if (computedAssets.length === 0) {
@@ -29,21 +29,27 @@ export const DiaryDetailView = ({diary, computedAssets, isLoading}: DiaryDetailV
     }
 
     return (
-        <div className="card-container items-center">
-            <Card className="min-w-96 flex flex-col">
-                <CardHeader className="w-full border-b p-5 text-center">
-                    <CardTitle>{new Date(diary.date).toLocaleDateString()}</CardTitle>
+        <div className="card-container items-center max-w-[40rem] w-full mx-auto">
+            <Card className="flex flex-col w-full">
+                <CardHeader className="text-center">
+                    <CardTitle className="pb-2 text-2xl">{new Date(diary.date).toLocaleDateString()}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col max-w-2xl p-5 flex-1 text-center gap-3">
-                    <div className="border mb-2 p-3">
-                        <p className="font-bold">{ titleText }</p>
+                <CardContent className="flex flex-col max-w-2xl p-5 flex-1 gap-10">
+                    <div className="border-b pb-2">
+                        <p className="description-text">title</p>
+                        <p className="font-bold text-xl">{ titleText }</p>
                     </div>
-                    <div className="border p-3">
-                        <p>{ contentsText }</p>
+                    <div>
+                        <p className="description-text pb-2">contents</p>
+                        <div className="border rounded-md p-3">
+                            <p>{ contentsText }</p>
+                        </div>
                     </div>
-                    <p className="text-left">투자한 종목들</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        { diaryAssetCard }
+                    <div>
+                        <p className="description-text pb-2">투자한 종목들</p>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            { diaryAssetCard }
+                        </div>
                     </div>
                 </CardContent>
             </Card>

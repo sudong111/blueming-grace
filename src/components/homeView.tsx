@@ -25,7 +25,7 @@ export const HomeView = ({ isLoading }: HomeViewProps) => {
     return (
         <>
             <p className="text-2xl font-bold mb-4">투자 일지</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full gap-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full gap-5">
                 {diaries.map(diary => (
                     <DiaryCard key={diary.id} diary={diary} />
                 ))}
@@ -33,10 +33,10 @@ export const HomeView = ({ isLoading }: HomeViewProps) => {
             <Button
                 variant="add"
                 size="free"
-                className="fixed right-10 bottom-10 w-12 h-12 sm:w-20 sm:h-20 lg:w-28 lg:h-28 opacity-100 flex items-center justify-center"
+                className="diary-add-button"
                 onClick={() => navigate("/diary/add")}
             >
-                <FaPlus className="text-white" />
+                <FaPlus className="diary-add-text" />
             </Button>
         </>
     );

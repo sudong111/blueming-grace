@@ -8,7 +8,7 @@ interface DiaryCardProps {
 
 export const DiaryCard = ({ diary }: DiaryCardProps) => {
     const navigate = useNavigate();
-    const titleText = diary.title.length === 0 ? '제목 없음' : `<${ diary.title }>`;
+    const titleText = diary.title.length === 0 ? '제목 없음' : diary.title;
     const contentsText = diary.contents.length === 0 ? '내용 없음' : diary.contents;
 
     const handleClick = () => {
@@ -17,13 +17,21 @@ export const DiaryCard = ({ diary }: DiaryCardProps) => {
 
     return (
         <div className="card-container items-start" onClick={handleClick}>
-            <Card className="w-full h-[20rem] flex flex-col hover:bg-gray-100">
-                <CardHeader className="border-b p-5">
-                    <CardTitle>{new Date(diary.date).toLocaleDateString()}</CardTitle>
+            <Card className="home-diary-card">
+                <CardHeader className="text-center">
+                    <CardTitle className="pb-2 text-xl">{new Date(diary.date).toLocaleDateString()}</CardTitle>
                 </CardHeader>
-                <CardContent className="overflow-y-auto p-5 flex-1">
-                    <p className="mb-2 font-bold">{ titleText }</p>
-                    <p>{ contentsText }</p>
+                <CardContent className="flex flex-col max-w-2xl p-5 flex-1 gap-5">
+                    <div className="border-b pb-1">
+                        <p className="description-text">title</p>
+                        <p className="font-bold text-xl">{ titleText }</p>
+                    </div>
+                    <div>
+                        <p className="description-text pb-1">contents</p>
+                        <div className="line-clamp-3">
+                            <p>{ contentsText }</p>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
         </div>
