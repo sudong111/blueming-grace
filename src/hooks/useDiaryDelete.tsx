@@ -1,8 +1,11 @@
+import {useSelector} from "react-redux";
+import type { RootState } from "@/store";
 import axios, { AxiosError } from "axios";
 
 export const useDiaryDelete = () => {
+    const token = useSelector((state: RootState) => state.login.token);
 
-    const deleteDiary = async (diary_id: number, token: string | null) => {
+    const deleteDiary = async (diary_id: number) => {
         if(!token) {
             throw new Error("token 이 존재하지 않아 투자 일정 삭제에 실패했습니다.");
         }

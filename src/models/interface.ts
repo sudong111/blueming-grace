@@ -42,6 +42,7 @@ export interface DiaryAssetInterface {
 export interface ComputedAssetInterface {
     id: number,
     ticker: string,
+    amount: number,
     buy_price: number,
     present_price: number,
     rate: number

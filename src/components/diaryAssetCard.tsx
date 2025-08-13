@@ -18,6 +18,10 @@ export const DiaryAssetCard = ({ asset }: DiaryAssetCardProps) => {
             </CardHeader>
             <CardContent className="p-2 break-words whitespace-normal">
                 <div>
+                    <p className="description-text">보유 수량</p>
+                    <p>{asset.amount}</p>
+                </div>
+                <div>
                     <p className="description-text">매수가</p>
                     <p>${asset.buy_price}</p>
                 </div>

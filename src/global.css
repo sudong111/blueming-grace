@@ -11,7 +11,7 @@ body {
 }
 
 .view {
-    @apply flex-1 flex flex-col items-center p-5
+    @apply flex-1 flex flex-col items-center p-5 bg-gray-50
 }
 
 .header {
@@ -41,6 +41,14 @@ body {
     @apply fixed right-10 bottom-10 w-12 h-12 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br
     from-green-100 via-green-500 to-green-700
     shadow-lg shadow-green-800 hover:shadow-xl hover:shadow-green-500/70
+    transition-all duration-300 transform hover:scale-110
+    flex items-center justify-center;
+}
+
+.diary-delete-button {
+    @apply fixed right-10 bottom-10 w-12 h-12 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br
+    from-red-100 via-red-500 to-red-700
+    shadow-lg shadow-red-800 hover:shadow-xl hover:shadow-red-500/70
     transition-all duration-300 transform hover:scale-110
     flex items-center justify-center;
 }

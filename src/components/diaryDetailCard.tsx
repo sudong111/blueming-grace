@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
-import type { ComputedAssetInterface, DiaryInterface } from "@/models/interface.ts";
-import { DiaryAssetCard } from "@/components/diaryAssetCard.tsx";
+import { DiaryAssetCard } from "@/components/diaryAssetCard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { ComputedAssetInterface, DiaryInterface } from "@/models/interface";
 
 interface DiaryDetailViewProps {
     diary: DiaryInterface | undefined,
@@ -8,7 +8,7 @@ interface DiaryDetailViewProps {
     isLoading: boolean
 }
 
-export const DiaryDetailView = ({diary, computedAssets, isLoading}: DiaryDetailViewProps) => {
+export const DiaryDetailCard = ({diary, computedAssets, isLoading}: DiaryDetailViewProps) => {
     let diaryAssetCard;
     if(!diary) {
         return <div className="p-4">해당 투자 일지를 찾을 수 없습니다.</div>;

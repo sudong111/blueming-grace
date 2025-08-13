@@ -12,6 +12,7 @@ export const computeAssets = (
             return {
                 id: 0,
                 ticker: '',
+                amount: 0,
                 buy_price: asset.buy_price,
                 present_price: 0,
                 rate: 0,
@@ -23,8 +24,9 @@ export const computeAssets = (
         const rate = ((presentPrice - buyPrice) / buyPrice) * 100;
 
         return {
-            id: target.id,
+            id: asset.id,
             ticker: target.ticker,
+            amount: asset.amount,
             buy_price: buyPrice,
             present_price: presentPrice,
             rate: Math.round(rate * 100) / 100,
