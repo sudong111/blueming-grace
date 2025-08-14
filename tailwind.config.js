@@ -10,6 +10,16 @@ module.exports = {
 			fontFamily: {
 				sans: ['"Noto Sans KR"', '"Roboto Condensed"', 'sans-serif'],
 			},
+			keyframes: {
+				fadeOut: {
+					'0%': { opacity: '1' },
+					'80%': { opacity: '1' },
+					'100%': { opacity: '0', visibility: 'hidden' },
+				},
+			},
+			animation: {
+				'fade-out-2s': 'fadeOut 2s forwards',
+			},
     		borderRadius: {
     			lg: 'var(--radius)',
     			md: 'calc(var(--radius) - 2px)',

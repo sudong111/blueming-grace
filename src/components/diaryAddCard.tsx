@@ -54,6 +54,7 @@ export const DiaryAddCard = ({ action, isLoading }: DiaryAddCardProps) => {
                         </div>
                         <AddAsset assets={assets} onAssetsChange={ handleAssetsChange } />
                         <Button type="submit" className="w-full" disabled={isLoading} aria-label="submit_button" >
+                            <div hidden={!isLoading} className="spinner size-3"></div>
                             투자 일지 등록
                         </Button>
                     </form>

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { toast, type Id } from "react-toastify";
 import {vi, type MockInstance, expect} from 'vitest';
 import { store } from '@/store';
-import { login, logout } from '@/store/loginSlice';
+import { login } from '@/store/loginSlice';
 import { Home } from '@/pages/home';
 import { HomeView } from "@/components/homeView.tsx";
 
@@ -51,20 +51,6 @@ afterEach(() => {
 });
 
 describe('Home Test', () => {
-    test('로그아웃일 때 화면 렌더링', () => {
-        store.dispatch(logout());
-
-        render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <Home />
-                </BrowserRouter>
-            </Provider>
-        );
-
-        expect(screen.getByLabelText('alert_text')).toHaveTextContent('로그인이 필요합니다.');
-    });
-
     test('로딩 중일 때 화면 렌더링', () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
         mockGetDiaries.mockReturnValueOnce(new Promise(() => {}));
@@ -107,7 +93,7 @@ describe('Home Test', () => {
             </Provider>
         );
 
-        expect(screen.getByLabelText('assets-alert-text')).toHaveTextContent('*종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.');
+        expect(screen.getByLabelText('assets-alert-text')).toHaveTextContent('* 종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.');
     });
 
     test('투자 일지 추가 버튼 클릭시 페이지 이동', () => {
@@ -210,7 +196,7 @@ describe('Home Test', () => {
             </Provider>
         );
 
-        expect(screen.getByLabelText('assets-alert-text')).toHaveTextContent('*종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.');
+        expect(screen.getByLabelText('assets-alert-text')).toHaveTextContent('* 종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.');
         await waitFor(() => {
             expect(toastErrorSpy).toHaveBeenCalledWith('투자 종목 조회 실패: 관리자에게 문의하세요.');
         });

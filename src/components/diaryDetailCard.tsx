@@ -11,10 +11,10 @@ interface DiaryDetailViewProps {
 export const DiaryDetailCard = ({diary, computedAssets, isLoading}: DiaryDetailViewProps) => {
     let diaryAssetCard;
     if(!diary) {
-        return <div className="p-4" aria-label="alert_text">해당 투자 일지를 찾을 수 없습니다.</div>;
+        return <p className="p-4" aria-label="alert_text">해당 투자 일지를 찾을 수 없습니다.</p>;
     }
     if(isLoading) {
-        return <div className="p-4" aria-label="alert_text">투자 일지를 불러오는 중...</div>;
+        return <p className="p-4" aria-label="alert_text">투자 일지를 불러오는 중...</p>;
     }
 
     const titleText = diary.title.length === 0 ? '제목 없음' : diary.title;

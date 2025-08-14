@@ -78,6 +78,7 @@ export const AuthCard = ({ action, type, isLoading }: AuthCardProps) => {
                             )}
                         </div>
                         <Button type="submit" className="w-full" disabled={isLoading} aria-label="button">
+                            <div hidden={!isLoading} className="spinner size-3"></div>
                             { isLoginPage ? "로그인" : "회원가입" }
                         </Button>
                     </form>

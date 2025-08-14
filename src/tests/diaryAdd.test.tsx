@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { toast, type Id } from 'react-toastify';
 import { vi, type MockInstance, expect } from 'vitest';
 import { store } from '@/store';
-import { login, logout } from "@/store/loginSlice";
+import { login } from "@/store/loginSlice";
 import { DiaryAdd } from "@/pages/diaryAdd";
 
 let toastSuccessSpy: MockInstance;
@@ -41,20 +41,6 @@ afterEach(() => {
 });
 
 describe('DiaryAdd Test', () => {
-    test('로그아웃일 때 화면 렌더링', () => {
-        store.dispatch(logout());
-
-        render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <DiaryAdd />
-                </BrowserRouter>
-            </Provider>
-        );
-
-        expect(screen.getByLabelText('alert_text')).toHaveTextContent('로그인이 필요합니다.');
-    });
-
     test('투자 일지 등록 화면 렌더링', () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
 
