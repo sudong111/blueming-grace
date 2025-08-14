@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { MdOutlineCancel } from "react-icons/md";
 import { type AssetAddInterface } from "@/models/interface"
 
 interface AddAssetProps {
@@ -79,7 +80,7 @@ export const AddAsset = ({assets, onAssetsChange} : AddAssetProps) => {
                         aria-label="buy_price"
                     />
                     <Button variant="ghost" type="button" onClick={ () => deleteAddAssetField(index) }>
-                        X
+                        <MdOutlineCancel className="text-red-500" />
                     </Button>
                 </div>
             ))}

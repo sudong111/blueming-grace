@@ -57,8 +57,12 @@ body {
     @apply text-white !w-[1.5rem] !h-[1.5rem] drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]
 }
 
-.header-button {
+.blue-button {
     @apply bg-gradient-to-br hover:!bg-white hover:shadow-sm hover:shadow-blue-500/50 transition-all duration-300 transform
+}
+
+.gray-button {
+    @apply bg-gradient-to-br hover:!bg-white hover:shadow-sm hover:shadow-gray-500/50 transition-all duration-300 transform
 }
 
 .login-button {

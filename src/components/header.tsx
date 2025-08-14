@@ -21,11 +21,11 @@ export const Header = () => {
 
     return (
         <div className="header">
-            <div className="flex justify-between h-full mx-5 py-3 items-center">
+            <div className={`flex h-full mx-5 py-3 items-center ${!isLoggedIn ? 'justify-end' : 'justify-between'}`}>
                 <Button
                     variant="ghost"
                     onClick={() => navigate("/")}
-                    className="header-button"
+                    className={`blue-button ${!isLoggedIn ? 'hidden' : ''}`}
                 >
                     <FaHome/>
                 </Button>
@@ -41,7 +41,7 @@ export const Header = () => {
                         <Button
                             variant="outline"
                             onClick={() => navigate("/signup")}
-                            className="header-button"
+                            className="blue-button"
                         >
                             sign-up
                         </Button>
@@ -50,7 +50,7 @@ export const Header = () => {
                     <Button
                         variant="outline"
                         onClick={() => handleLogout() }
-                        className="header-button"
+                        className="blue-button"
                     >
                         logout
                     </Button>

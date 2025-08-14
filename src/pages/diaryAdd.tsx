@@ -40,11 +40,7 @@ export const DiaryAdd = () => {
         }
     }
 
-    return !isLoggedIn ? (
-        <div className="view">
-            <div className="p-4" aria-label="alert_text">로그인이 필요합니다.</div>
-        </div>
-    ) : (
+    return (
         <div className="view justify-center">
             <DiaryAddCard action={handleDiaryAdd} isLoading={isLoading} />
         </div>

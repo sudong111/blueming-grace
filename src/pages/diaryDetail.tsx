@@ -75,11 +75,7 @@ export const DiaryDetail = () => {
         }
     }, [diary, assets.data]);
 
-    return !isLoggedIn ? (
-        <div className="view">
-            <div className="p-4" aria-label="alert_text">로그인이 필요합니다.</div>
-        </div>
-    ) : (
+    return (
         <div className="view justify-center">
             <DiaryDetailCard diary={diary || undefined} computedAssets={computedAssets} isLoading={isLoading} />
             {diary &&

@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import storageSession from "redux-persist/lib/storage/session";
 import type { LoginInterface } from "@/models/interface";
 
 const initialState: LoginInterface = {
@@ -11,7 +11,7 @@ const initialState: LoginInterface = {
 
 const persistConfig = {
     key: "login",
-    storage,
+    storage: storageSession,
     whitelist: ["token", "userId", "isLoggedIn"],
 };
 

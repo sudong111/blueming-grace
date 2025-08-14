@@ -1,14 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistStore } from "redux-persist";
+import { persistReducer, persistStore } from "redux-persist";
+import storageSession from "redux-persist/lib/storage/session";
 import loginReducer from './loginSlice';
 import diaryReducer from './diariesSlice'
 import assetsReducer from './assetsSlice'
 
+const persistConfig = {
+    key: 'login',
+    storage: storageSession,
+};
+
+const persistedLoginReducer = persistReducer(persistConfig, loginReducer);
+
 export const store = configureStore({
     reducer: {
-        login: loginReducer,
+        login: persistedLoginReducer, // 로그인 slice만 persist 적용
         diaries: diaryReducer,
-        assets: assetsReducer
+        assets: assetsReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
@@ -17,5 +25,6 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

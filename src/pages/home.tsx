@@ -51,17 +51,13 @@ export const Home = () => {
         }
     }, [token]);
 
-    return !isLoggedIn ? (
-        <div className="view">
-            <div className="p-4" aria-label="alert_text">로그인이 필요합니다.</div>
-        </div>
-    ) : (
+    return (
         <div className="view">
             <HomeView isLoading= { isLoading } />
             <p className="absolute left-0 text-xl font-bold text-red-500"
                hidden={isAssets}
                aria-label="assets-alert-text"
-            >*종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.</p>
+            >* 종목 정보가 존재하지 않습니다. 관리자에게 문의하세요.</p>
             <Button
                 variant="add"
                 size="free"
