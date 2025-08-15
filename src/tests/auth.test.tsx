@@ -83,6 +83,25 @@ describe('Login Test', () => {
         });
     });
 
+    test('로그인 정보 미입력시 validation 출력', async () => {
+        mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Login />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(screen.getByLabelText('button'));
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('id_error_text')).toHaveTextContent("ID를 입력해주세요.");
+            expect(screen.getByLabelText('password_error_text')).toHaveTextContent("비밀번호를 입력해주세요.");
+        });
+    });
+
     test('아이디가 존재하지 않을 때 오류 출력', async () => {
         mockLoginUser.mockRejectedValueOnce(new Error('nonexist@test.com is not exist'));
 
@@ -164,6 +183,27 @@ describe('Signup Test', () => {
             expect(mockNavigate).toHaveBeenCalledWith('/');
         });
     });
+
+    test('회원가입 정보 미입력시 validation 출력', async () => {
+        mockLoginUser.mockResolvedValueOnce({ token: 'fake-token', userId: 1 });
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Signup />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(screen.getByLabelText('button'));
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('id_error_text')).toHaveTextContent("ID를 입력해주세요.");
+            expect(screen.getByLabelText('password_error_text')).toHaveTextContent("비밀번호를 입력해주세요.");
+            expect(screen.getByLabelText('check_error_text')).toHaveTextContent("비밀번호 확인을 입력해주세요.");
+        });
+    });
+
 
     test('아이디가 이미 존재할 때 오류 출력', async () => {
         mockSignupUser.mockRejectedValueOnce(new Error('has already been taken'));

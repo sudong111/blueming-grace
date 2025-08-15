@@ -46,12 +46,13 @@ export const AuthCard = ({ action, isLoginType, isLoading }: AuthCardProps) => {
                                         type="text"
                                         placeholder="blueming@example.com"
                                         {...register("id", {
-                                            required: "ID를 입력해주세요",
+                                            required: "ID를 입력해주세요.",
                                         })}
                                         className={`w-full ${errors.id ? "border-red-500" : ""} `}
                                     />
                                 </div>
-                                {errors.id && <p className="absolute left-[30%] top-full mt-1 text-red-500 text-xs">{errors.id.message}</p>}
+                                {errors.id && <p className="absolute left-[30%] top-full mt-1 text-red-500 text-xs" aria-label="id_error_text">
+                                    {errors.id.message}</p>}
                             </div>
 
                             <div className="card-input-wrapper relative">
@@ -63,13 +64,14 @@ export const AuthCard = ({ action, isLoginType, isLoading }: AuthCardProps) => {
                                             type="password"
                                             placeholder="password"
                                             {...register("pw", {
-                                                required: "비밀번호를 입력해주세요",
+                                                required: "비밀번호를 입력해주세요.",
                                             })}
                                             className={`w-full ${errors.pw ? "border-red-500" : ""} `}
                                         />
                                     </div>
                                 </div>
-                                {errors.pw && <p className="absolute left-[30%] top-full mt-1 text-red-500 text-xs">{errors.pw.message}</p>}
+                                {errors.pw && <p className="absolute left-[30%] top-full mt-1 text-red-500 text-xs" aria-label="password_error_text">
+                                    {errors.pw.message}</p>}
                             </div>
 
                             {!isLoginType && (
@@ -81,12 +83,13 @@ export const AuthCard = ({ action, isLoginType, isLoading }: AuthCardProps) => {
                                             type="password"
                                             placeholder="password"
                                             {...register("pw_check", {
-                                                required: "비밀번호 확인을 입력해주세요",
+                                                required: "비밀번호 확인을 입력해주세요.",
                                             })}
                                             className={`w-full ${errors.pw_check ? "border-red-500" : ""} `}
                                         />
                                     </div>
-                                    {errors.pw_check && <p className="absolute left-[30%] top-full mt-1 text-red-500 text-xs">{errors.pw_check.message}</p>}
+                                    {errors.pw_check && <p className="absolute left-[30%] top-full mt-1 text-red-500 text-xs" aria-label="check_error_text">
+                                        {errors.pw_check.message}</p>}
                                 </div>
                             )}
                         </div>

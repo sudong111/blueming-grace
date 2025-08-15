@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ interface AddAssetProps {
     assets: AssetAddInterface[],
     assetsError: AssetsErrorInterface[],
     onAssetsChange: (assets: AssetAddInterface[]) => void
-    onAssetsErrorChange: (assetsError: AssetsErrorInterface[]) => void
+    onAssetsErrorChange: React.Dispatch<React.SetStateAction<AssetsErrorInterface[]>>;
 }
 
 export const AddAsset = ({assets, assetsError, onAssetsChange, onAssetsErrorChange} : AddAssetProps) => {
@@ -28,10 +29,10 @@ export const AddAsset = ({assets, assetsError, onAssetsChange, onAssetsErrorChan
     
     const clearAssetError = (index: number, fieldName: string) => {
         onAssetsErrorChange((newAssetsError) => {
-            return newAssetsError.map((error, i) => {
+            return newAssetsError.map((error: AssetsErrorInterface, i: number) => {
                 if (i !== index) return error;
 
-                const updateFieldIndex = error.field_index.filter((name) => name !== fieldName);
+                const updateFieldIndex = error.field_index.filter((name: string) => name !== fieldName);
 
                 return {
                     ...error,
@@ -101,7 +102,7 @@ export const AddAsset = ({assets, assetsError, onAssetsChange, onAssetsErrorChan
                                 onFocus={() => error?.field_index.includes("가격") && clearAssetError(index, "가격")}
                             />
 
-                            <Button variant="ghost" type="button" onClick={() => deleteAddAssetField(index)}>
+                            <Button variant="ghost" type="button" onClick={() => deleteAddAssetField(index)} aria-label="delete_asset_button">
                                 <MdOutlineCancel className="text-red-500" />
                             </Button>
 
@@ -109,6 +110,7 @@ export const AddAsset = ({assets, assetsError, onAssetsChange, onAssetsErrorChan
                                 <p
                                     id={`error-${index}`}
                                     className="absolute left-0 top-full mt-1 text-red-500 text-xs"
+                                    aria-label="asset_error_text"
                                 >
                                     {error.field_index.join(", ")} 을 입력해주세요.
                                 </p>

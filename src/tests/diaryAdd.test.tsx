@@ -7,6 +7,7 @@ import { vi, type MockInstance, expect } from 'vitest';
 import { store } from '@/store';
 import { login } from "@/store/loginSlice";
 import { DiaryAdd } from "@/pages/diaryAdd";
+import {setAssets} from "@/store/assetsSlice.ts";
 
 let toastSuccessSpy: MockInstance;
 let toastErrorSpy: MockInstance;
@@ -63,7 +64,7 @@ describe('DiaryAdd Test', () => {
         expect(screen.getByLabelText('submit_button')).toHaveTextContent('투자 일지 등록');
     });
 
-    test('종목 추가 버튼 클릭 시 새로운 자산 입력 필드 생성 렌더링', () => {
+    test('종목 추가 버튼 클릭 시 화면 렌더링', () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
 
         render(
@@ -82,6 +83,65 @@ describe('DiaryAdd Test', () => {
         expect(screen.getAllByLabelText('buy_price').length).toBe(2);
     });
 
+    test('종목 삭제 버튼 클릭 시 화면 렌더링', () => {
+        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryAdd />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(screen.getByLabelText('insert_asset_button'));
+        fireEvent.click(screen.getByLabelText('insert_asset_button'));
+        fireEvent.click(screen.getAllByLabelText('delete_asset_button')[0]);
+
+        expect(screen.queryAllByRole('combobox').length).toBe(1);
+        expect(screen.getAllByLabelText('amount').length).toBe(1);
+        expect(screen.getAllByLabelText('buy_price').length).toBe(1);
+    });
+
+    test('투자 정보 미입력시 validation 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryAdd />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(screen.getByLabelText('submit_button'));
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('date_error_text')).toHaveTextContent("날짜를 입력해주세요.");
+            expect(screen.getByLabelText('title_error_text')).toHaveTextContent("제목을 입력해주세요.");
+            expect(screen.getByLabelText('contents_error_text')).toHaveTextContent("내용을 입력해주세요.");
+        });
+    });
+
+    test('종목 정보 미입력시 validation 출력', async () => {
+        store.dispatch(login({ token: '', user_id: 1 }));
+
+        render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <DiaryAdd />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(screen.getByLabelText('insert_asset_button'));
+        fireEvent.click(screen.getByLabelText('submit_button'));
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('asset_error_text')).toHaveTextContent("티커, 수량, 가격 을 입력해주세요.");
+        });
+    });
+
     test('토큰 없이 투자 일지 추가시 에러 출력', async () => {
         store.dispatch(login({ token: '', user_id: 1 }));
         mockInsertDiary.mockRejectedValueOnce(new Error("token 이 존재하지 않습니다."));
@@ -94,6 +154,9 @@ describe('DiaryAdd Test', () => {
             </Provider>
         );
 
+        fireEvent.change(screen.getByLabelText('date'), { target: { value: '2025-08-15' } });
+        fireEvent.change(screen.getByLabelText('title'), { target: { value: 'title' } });
+        fireEvent.change(screen.getByLabelText('contents'), { target: { value: 'contents' } });
         fireEvent.click(screen.getByLabelText('submit_button'));
 
         await waitFor(() => {
@@ -103,6 +166,9 @@ describe('DiaryAdd Test', () => {
 
     test('토큰 없이 투자 종목 추가시 에러 출력', async () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+        ]));
         mockInsertDiary.mockResolvedValueOnce({ id: 1 });
         mockInsertDiaryAssets.mockRejectedValueOnce(new Error("token 이 존재하지 않습니다."));
 
@@ -114,10 +180,14 @@ describe('DiaryAdd Test', () => {
             </Provider>
         );
 
+        fireEvent.change(screen.getByLabelText('date'), { target: { value: '2025-08-15' } });
+        fireEvent.change(screen.getByLabelText('title'), { target: { value: 'title' } });
+        fireEvent.change(screen.getByLabelText('contents'), { target: { value: 'contents' } });
         fireEvent.click(screen.getByLabelText('insert_asset_button'));
+        fireEvent.click(screen.getByRole('combobox'));
+        fireEvent.click(screen.getAllByText('AAA')[1]);
         fireEvent.change(screen.getByLabelText('amount'), { target: { value: 10 } });
         fireEvent.change(screen.getByLabelText('buy_price'), { target: { value: 400 } });
-
         fireEvent.click(screen.getByLabelText('submit_button'));
 
         await waitFor(() => {
@@ -127,6 +197,9 @@ describe('DiaryAdd Test', () => {
 
     test('투자 일지 추가 성공시 페이지 이동 및 출력', async () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
+        store.dispatch(setAssets([
+            {id: 1, ticker: 'AAA', name: 'AAA_name', price: 200},
+        ]));
         mockInsertDiary.mockResolvedValueOnce({ id: 1 });
         mockInsertDiaryAssets.mockResolvedValueOnce(undefined);
 
@@ -138,13 +211,14 @@ describe('DiaryAdd Test', () => {
             </Provider>
         );
 
+        fireEvent.change(screen.getByLabelText('date'), { target: { value: '2025-08-15' } });
+        fireEvent.change(screen.getByLabelText('title'), { target: { value: 'title' } });
+        fireEvent.change(screen.getByLabelText('contents'), { target: { value: 'contents' } });
         fireEvent.click(screen.getByLabelText('insert_asset_button'));
-        fireEvent.click(screen.getByLabelText('insert_asset_button'));
-        fireEvent.change(screen.getAllByLabelText('amount')[0], { target: { value: 10 } });
-        fireEvent.change(screen.getAllByLabelText('amount')[1], { target: { value: 20 } });
-        fireEvent.change(screen.getAllByLabelText('buy_price')[0], { target: { value: 400 } });
-        fireEvent.change(screen.getAllByLabelText('buy_price')[1], { target: { value: 600 } });
-
+        fireEvent.click(screen.getByRole('combobox'));
+        fireEvent.click(screen.getAllByText('AAA')[1]);
+        fireEvent.change(screen.getByLabelText('amount'), { target: { value: 10 } });
+        fireEvent.change(screen.getByLabelText('buy_price'), { target: { value: 400 } });
         fireEvent.click(screen.getByLabelText('submit_button'));
 
         await waitFor(() => {

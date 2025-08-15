@@ -32,10 +32,6 @@ export const DiaryAddCard = ({ action, isLoading }: DiaryAddCardProps) => {
         setAssets(addAssets);
     };
 
-    const handleAssetsErrorChange = (filteredAssetsError: AssetsErrorInterface[]) => {
-        setAssetsError(filteredAssetsError);
-    }
-
     const onSubmit = async () => {
         const result = validationAssets(assets);
         setAssetsError(result);
@@ -86,43 +82,46 @@ export const DiaryAddCard = ({ action, isLoading }: DiaryAddCardProps) => {
                             <Label className="mb-2" htmlFor="date">투자 날짜</Label>
                             <Input id="date" type="date" aria-label="date"
                                    {...register("date", {
-                                       required: "날짜를 입력해주세요",
+                                       required: "날짜를 입력해주세요.",
                                    })}
                                    className={`w-full ${errors.date ? "border-red-500" : ""} `}
                                    onFocus={() => clearErrors("date")}
                             ></Input>
-                            {errors.date && <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">{errors.date.message}</p>}
+                            {errors.date && <p className="absolute left-0 top-full mt-1 text-red-500 text-xs" aria-label="date_error_text">
+                                {errors.date.message}</p>}
                         </div>
 
                         <div className="input-container">
                             <Label className="mb-2" htmlFor="title">투자 일지 제목</Label>
                             <Input id="title" type="text" aria-label="title"
                                    {...register("title", {
-                                       required: "제목를 입력해주세요",
+                                       required: "제목을 입력해주세요.",
                                    })}
                                    className={`w-full ${errors.title ? "border-red-500" : ""} `}
                                    onFocus={() => clearErrors("title")}
                             ></Input>
-                            {errors.title && <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">{errors.title.message}</p>}
+                            {errors.title && <p className="absolute left-0 top-full mt-1 text-red-500 text-xs" aria-label="title_error_text">
+                                {errors.title.message}</p>}
                         </div>
 
                         <div className="input-container">
                             <Label className="mb-2" htmlFor="contents">투자 일지 내용</Label>
                             <Textarea id="contents" aria-label="contents"
                                       {...register("contents", {
-                                          required: "내용를 입력해주세요",
+                                          required: "내용을 입력해주세요.",
                                       })}
                                       className={`min-h-28 ${errors.contents ? "border-red-500" : ""} `}
                                       onFocus={() => clearErrors("contents")}
                             ></Textarea>
-                            {errors.contents && <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">{errors.contents.message}</p>}
+                            {errors.contents && <p className="absolute left-0 top-full mt-1 text-red-500 text-xs" aria-label="contents_error_text">
+                                {errors.contents.message}</p>}
                         </div>
 
                         <AddAsset
                             assets={assets}
                             assetsError={assetsError}
                             onAssetsChange={ handleAssetsChange }
-                            onAssetsErrorChange={handleAssetsErrorChange}/>
+                            onAssetsErrorChange={setAssetsError}/>
 
                         <Button type="button" className="w-full" disabled={isLoading} aria-label="submit_button" onClick={onSubmit}>
                             <div hidden={!isLoading} className="spinner size-3"></div>
