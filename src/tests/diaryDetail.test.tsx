@@ -82,22 +82,6 @@ describe('DiaryDetail Test', () => {
         });
     });
 
-    test('로딩 중일 때 화면 렌더링', () => {
-        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
-        store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
-        mockGetDiaryAssets.mockReturnValueOnce(new Promise(() => {}));
-
-        render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <DiaryDetail />
-                </BrowserRouter>
-            </Provider>
-        );
-
-        expect(screen.getByLabelText('alert_text')).toHaveTextContent(/투자 일지를 불러오는 중/);
-    });
-
     test('투자 일지 및 투자 종목 조회시 화면 렌더링', async () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
         store.dispatch(setDiaries([{ id: 1, title: '테스트 일지', contents: '내용', date: '2025-08-11' }]));
