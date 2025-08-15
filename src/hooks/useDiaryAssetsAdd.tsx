@@ -41,10 +41,13 @@ export const useDiaryAssetsAdd = () => {
             let message = "관리자에게 문의하세요.";
 
             if (axios.isAxiosError(e)) {
-                // 서버에서 message를 내려줬다면 사용, 없으면 기본 메시지
-                message = e.response?.data?.message ?? message;
+                if(e.response?.data.asset[0] === 'must exist') {
+                    message = "선택 되지 않은 종목이 있습니다."
+                }
+                else {
+                    message = e.response?.data?.message ?? message;
+                }
             } else if (e instanceof Error) {
-                // 일반 Error 객체면 그 message 사용
                 message = e.message || message;
             }
 

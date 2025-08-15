@@ -22,7 +22,7 @@ export const Signup = () => {
     return (
         <div className="view justify-center">
             <AuthCard
-                action={handleSignup} type="signup" isLoading={isLoading}
+                action={handleSignup} isLoginType={false} isLoading={isLoading}
             />
         </div>
     )

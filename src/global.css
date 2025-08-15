@@ -23,8 +23,12 @@ body {
     @apply flex gap-3 mx-3 w-full items-center
 }
 
+.card-input-wrapper {
+    @apply flex flex-col gap-1
+}
+
 .card-input-container {
-    @apply grid grid-cols-[30%_auto] items-center gap-2;
+    @apply grid grid-cols-[30%_auto] items-center;
 }
 
 .card-container {
@@ -32,7 +36,7 @@ body {
 }
 
 .input-container {
-    @apply flex flex-col;
+    @apply relative flex flex-col;
 }
 
 /*components*/

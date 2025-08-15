@@ -47,3 +47,8 @@ export interface ComputedAssetInterface {
     present_price: number,
     rate: number
 }
+
+export interface AssetsErrorInterface {
+    field_index: string[];
+    isValid: boolean;
+}

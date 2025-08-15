@@ -26,12 +26,11 @@ export const ConfirmDialog = ({type, title, contents, open, isDeleteLoading, onO
                     <DialogClose asChild>
                         <Button variant="ghost" aria-label="dialog_cancel_button">Cancel</Button>
                     </DialogClose>
-                    <Button variant="destructive" type="button" disabled={isDeleteLoading} onClick={() => {
-                        onConfirm();
-                        onOpenChange(false);
-                    }}
+                    <Button variant="destructive" type="button" disabled={isDeleteLoading} onClick={() => onConfirm()}
                             aria-label="dialog_approve_button"
-                    >{type}</Button>
+                    >
+                        <div hidden={!isDeleteLoading} className="spinner size-3"></div>
+                        {type}</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -47,8 +47,8 @@ export const DiaryDetail = () => {
             toast.error(`투자 일지 삭제 실패: ${error.message}`);
         } finally {
             setIsDeleteLoading(false);
+            setIsDialogOpen(false);
         }
-        setIsDialogOpen(false);
         toast.success(`투자 일지(${diary.title})를 성공적으로 삭제했습니다.`);
         navigate("/");
     };

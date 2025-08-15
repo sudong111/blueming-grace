@@ -27,7 +27,7 @@ export const Login = () => {
     return (
         <div className="view justify-center">
             <AuthCard
-                action={handleLogin} type= "login" isLoading={isLoading}
+                action={handleLogin} isLoginType={true} isLoading={isLoading}
             />
         </div>
     )
