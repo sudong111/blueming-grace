@@ -14,7 +14,7 @@ const persistedLoginReducer = persistReducer(persistConfig, loginReducer);
 
 export const store = configureStore({
     reducer: {
-        login: persistedLoginReducer, // 로그인 slice만 persist 적용
+        login: persistedLoginReducer,
         diaries: diaryReducer,
         assets: assetsReducer,
     },

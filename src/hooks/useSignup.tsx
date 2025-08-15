@@ -31,7 +31,6 @@ export const useSignup = () => {
             let message = "관리자에게 문의하세요.";
 
             if (axios.isAxiosError(e)) {
-                // 회원가입은 email 로 error message 전송
                 message = e.response?.data?.email ?? message;
             } else if (e instanceof Error) {
                 message = e.message || message;

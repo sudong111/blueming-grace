@@ -1,6 +1,7 @@
 import { DiaryAssetCard } from "@/components/diaryAssetCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ComputedAssetInterface, DiaryInterface } from "@/models/interface";
+import {PageSpinner} from "@/components/pageSpinner.tsx";
 
 interface DiaryDetailViewProps {
     diary: DiaryInterface | undefined,
@@ -14,7 +15,7 @@ export const DiaryDetailCard = ({diary, computedAssets, isLoading}: DiaryDetailV
         return <p className="p-4" aria-label="alert_text">해당 투자 일지를 찾을 수 없습니다.</p>;
     }
     if(isLoading) {
-        return <p className="p-4" aria-label="alert_text">투자 일지를 불러오는 중...</p>;
+        return <PageSpinner/>
     }
 
     const titleText = diary.title.length === 0 ? '제목 없음' : diary.title;

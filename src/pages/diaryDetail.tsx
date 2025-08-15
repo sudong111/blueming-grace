@@ -9,7 +9,6 @@ import { useDiaryAssetsDelete } from "@/hooks/useDiaryAssetsDelete";
 import { computeAssets } from '@/utils/computedAsset';
 import { DiaryDetailCard } from "@/components/diaryDetailCard";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { ConfirmDialog } from "@/components/confirmDialog";
 import { FaTrashAlt } from "react-icons/fa";
 import type { ComputedAssetInterface } from "@/models/interface";
@@ -24,8 +23,6 @@ export const DiaryDetail = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [showProgress, setShowProgress] = useState(false);
     const [computedAssets, setComputedAssets] = useState<ComputedAssetInterface[]>([]);
 
     const { deleteDiary } = useDiaryDelete();
@@ -63,24 +60,18 @@ export const DiaryDetail = () => {
         if (!diary) return;
         if (isLoggedIn) {
             const loadData = async () => {
-                setShowProgress(true);
                 setIsLoading(true);
-                setProgress(20);
 
                 try {
                     const data = await getDiaryAssets();
-                    setProgress(40);
 
                     setComputedAssets(computeAssets(data, assets.data));
-                    setProgress(70);
 
                 } catch (e) {
                     const error = e as Error;
                     toast.error(`투자 종목 조회 실패: ${error.message}`);
                 } finally {
                     setIsLoading(false);
-                    setProgress(100);
-                    setTimeout(() => setShowProgress(false), 100);
                 }
             };
 
@@ -90,7 +81,6 @@ export const DiaryDetail = () => {
 
     return (
         <div className="view justify-center">
-            <Progress value={progress} hidden={!showProgress}/>
             <DiaryDetailCard diary={diary || undefined} computedAssets={computedAssets} isLoading={isLoading} />
             {diary &&
                 <>
@@ -116,5 +106,4 @@ export const DiaryDetail = () => {
             }
         </div>
     );
-
 };

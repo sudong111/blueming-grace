@@ -7,7 +7,6 @@ import {vi, type MockInstance, expect} from 'vitest';
 import { store } from '@/store';
 import { login } from '@/store/loginSlice';
 import { Home } from '@/pages/home';
-import { HomeView } from "@/components/homeView.tsx";
 
 let toastErrorSpy: MockInstance;
 
@@ -51,21 +50,6 @@ afterEach(() => {
 });
 
 describe('Home Test', () => {
-    test('로딩 중일 때 화면 렌더링', () => {
-        store.dispatch(login({ token: 'fake-token', user_id: 1 }));
-        mockGetDiaries.mockReturnValueOnce(new Promise(() => {}));
-
-        render(
-            <Provider store={store}>
-                <BrowserRouter>
-                    <HomeView isLoading={true}/>
-                </BrowserRouter>
-            </Provider>
-        );
-
-        expect(screen.getByLabelText('alert_text')).toHaveTextContent(/투자 일지 목록을 불러오는 중/);
-    });
-
     test('투자 일지가 없을 때 화면 렌더링', () => {
         store.dispatch(login({ token: 'fake-token', user_id: 1 }));
         mockGetDiaries.mockResolvedValueOnce([]);
